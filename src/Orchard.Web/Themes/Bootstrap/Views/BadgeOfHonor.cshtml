@@ -1,8 +1,1 @@
-﻿@{
-    var homeUrl = Href("~/");
-}
-<div class="col-lg-12">
-    Copyright &#169; <a href="http://orchardcollaboration.com">Siyamand Ayubi</a>.
-    Code licensed under the <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">MIT License (MIT)</a>.<br />
-    For more information & getting latest news, please visit <a href="http://orchardcollaboration.com">Orchard Collaboration web site</a>.
-</div>
+﻿<div class="credits"><span class="poweredby">@T("Powered by <a href=\"{0}\" target=\"_blank\">Orchard</a>", "http://www.orchardproject.net")</span> <span class="copyright">@T("&#169;{0}", @WorkContext.CurrentSite.SiteName) @DateTime.Now.Year</span></div>
