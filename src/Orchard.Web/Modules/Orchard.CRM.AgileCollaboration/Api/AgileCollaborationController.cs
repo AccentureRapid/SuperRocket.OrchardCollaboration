@@ -46,7 +46,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// GET Event/GetContentTypeDefinition
         /// example: http://localhost/api/AgileCollaboration/GetContentTypeDefinition?type=User
         /// </summary>
-        /// <param name="type">Content Type Name</param>
+        /// <param name="type"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("GetContentTypeDefinition")]
@@ -61,7 +61,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// GET Event/GetContentTypes
         /// example : http://localhost/api/AgileCollaboration/ContentTypes
         /// </summary>
-        /// <returns>All content type names</returns>
+        /// <returns></returns>
         [HttpGet]
         [Route("ContentTypes")]
         public IEnumerable<string> ContentTypes()
@@ -73,7 +73,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// GET Event/GetContentTypeDefinition
         /// example: http://localhost/api/AgileCollaboration/GetAvailableHtmlModules
         /// </summary>
-        /// <param name="type">Content Type Name</param>
         /// <returns></returns>
         [HttpGet]
         [Route("GetAvailableModules")]
