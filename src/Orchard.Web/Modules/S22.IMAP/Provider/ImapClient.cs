@@ -999,8 +999,11 @@ namespace S22.Imap.Provider {
 				StringReader reader = new StringReader(str);
 				bool useUTF8 = str.Contains("\r\n");
 				string line = reader.ReadLine();
-				string response = SendCommandGetResponse(tag + "UID SEARCH " +
-					(useUTF8 ? "CHARSET UTF-8 " : "") + line);
+
+                var command = tag + "UID SEARCH " +
+                   (useUTF8 ? "CHARSET UTF-8 " : "") + line;
+
+                string response = SendCommandGetResponse(command);
 				// If our search string consists of multiple lines, we're sending some strings in literal
 				// form and need to issue continuation requests.
 				while ((line = reader.ReadLine()) != null) {
