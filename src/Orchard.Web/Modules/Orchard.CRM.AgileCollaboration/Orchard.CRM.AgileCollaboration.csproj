@@ -115,6 +115,14 @@
       <Name>Orchard.Core</Name>
       <Private>false</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.CRM.Core\Orchard.CRM.Core.csproj">
+      <Project>{7AE1C659-22DD-4F7A-8D81-DADF0FAE6A74}</Project>
+      <Name>Orchard.CRM.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orchard.Users\Orchard.Users.csproj">
+      <Project>{79AED36E-ABD0-4747-93D3-8722B042454B}</Project>
+      <Name>Orchard.Users</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />

@@ -13,6 +13,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using Orchard.Users.Events;
+using Orchard.CRM.Core.Services;
+using Orchard.CRM.Core.Models;
+using Orchard.Core.Common.Models;
 
 namespace Orchard.CRM.AgileCollaboration.Api
 {
@@ -24,16 +28,26 @@ namespace Orchard.CRM.AgileCollaboration.Api
         private readonly IContentManager _contentManager;
         private readonly IContentTypesService _contentTypesService;
         private readonly IHtmlModuleService _moduleService;
-
+        private readonly IUserEventHandler _userEventHandler;
+        private readonly IMembershipService _membershipService;
+        private readonly IProjectService _projectService;
         public AgileCollaborationController(
             IContentManager contentManager,
             IContentTypesService contentTypesService,
-            IHtmlModuleService moduleService
+            IHtmlModuleService moduleService,
+            IUserEventHandler userEventHandler,
+            IMembershipService membershipService,
+            IProjectService projectService,
+            IOrchardServices _services
             )
         {
             _contentManager = contentManager;
             _contentTypesService = contentTypesService;
             _moduleService = moduleService;
+            _userEventHandler = userEventHandler;
+            _membershipService = membershipService;
+            _projectService = projectService;
+            Services = _services;
 
             Logger = NullLogger.Instance;
             T = NullLocalizer.Instance;
@@ -42,23 +56,37 @@ namespace Orchard.CRM.AgileCollaboration.Api
         public ILogger Logger { get; set; }
         public Localizer T { get; set; }
 
+        public IOrchardServices Services { get; set; }
         /// <summary>
-        /// GET Event/GetContentTypeDefinition
+        /// GET api/AgileCollaboration/GetContentTypeDefinition?type=User
         /// example: http://localhost/api/AgileCollaboration/GetContentTypeDefinition?type=User
         /// </summary>
         /// <param name="type">Content Type Name</param>
         /// <returns></returns>
         [HttpGet]
         [Route("GetContentTypeDefinition")]
-        public ContentTypeDefinition GetContentTypeDefinition(string type)
+        public HttpResponseMessage GetContentTypeDefinition(string type)
         {
-            return (from t in _contentManager.GetContentTypeDefinitions()
-                    where t.Name == type
-                    select t).FirstOrDefault();
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                 var definition = (from t in _contentManager.GetContentTypeDefinitions()
+                 where t.Name == type
+                 select t).FirstOrDefault();
+
+                
+                response.Content = Serialize(definition, response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetContentTypeDefinition :" + ex.Message);
+            }
+            return response;
         }
 
         /// <summary>
-        /// GET Event/GetContentTypes
+        /// GET api/AgileCollaboration/ContentTypes
         /// example : http://localhost/api/AgileCollaboration/ContentTypes
         /// </summary>
         /// <returns>All content type names</returns>
@@ -70,30 +98,71 @@ namespace Orchard.CRM.AgileCollaboration.Api
         }
 
         /// <summary>
-        /// GET Event/GetContentTypeDefinition
-        /// example: http://localhost/api/AgileCollaboration/GetAvailableHtmlModules
+        /// POST api/AgileCollaboration/Login
+        /// example : http://localhost/api/AgileCollaboration/Login 
         /// </summary>
-        /// <param name="type">Content Type Name</param>
+        /// <param name="userNameOrEmail"></param>
+        /// <param name="password"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("GetAvailableModules")]
-        public HttpResponseMessage GetAvailableModules()
+        [HttpPost]
+        [Route("Login")]
+        [AlwaysAccessible]
+        public HttpResponseMessage Login(string userNameOrEmail, string password)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {
-                var content = _moduleService.GetAvailableHtmlModules();
-
-                response.Content = Serialize(content, response);
+                var user = _membershipService.ValidateUser(userNameOrEmail, password);
+                response.Content = Serialize(user, response);
             }
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetAvailableHtmlModules :" + ex.Message);
+                Logger.Error("Error occurs when Login :" + ex.Message);
             }
             return response;
         }
 
+        /// <summary>
+        /// GET api/AgileCollaboration/GetMyProjects?userName=
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetMyProjects")]
+        public HttpResponseMessage GetMyProjects(string userName)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var user = _membershipService.GetUser(userName);
+                if (user != null)
+                {
+                    Services.WorkContext.CurrentUser = user;
+
+                    var projects = _projectService.GetProjects(null).Select(item =>
+                    new {
+                        item.As<ProjectPart>().Id,
+                        item.As<ProjectPart>().Title,
+                        item.As<ProjectPart>().Description,
+                        item.As<CommonPart>().CreatedUtc,
+                        item.As<CommonPart>().PublishedUtc,
+                        item.As<CommonPart>().ModifiedUtc,
+                        item.As<CommonPart>().VersionCreatedUtc,
+                        item.As<CommonPart>().VersionModifiedUtc,
+                        item.As<CommonPart>().VersionPublishedUtc,
+                        item.As<CommonPart>().Owner.UserName
+                    });
+                   
+                    response.Content = Serialize(projects, response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetMyProjects :" + ex.Message);
+            }
+            return response;
+        }
 
         private StringContent Serialize(dynamic source, HttpResponseMessage response)
         {
