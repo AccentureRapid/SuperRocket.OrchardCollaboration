@@ -107,13 +107,24 @@ namespace Orchard.CRM.AgileCollaboration.Api
         [HttpPost]
         [Route("Login")]
         [AlwaysAccessible]
-        public HttpResponseMessage Login(string userNameOrEmail, string password)
+        public HttpResponseMessage Login(dynamic userInfo)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {
-                var user = _membershipService.ValidateUser(userNameOrEmail, password);
-                response.Content = Serialize(user, response);
+                if (userInfo != null)
+                {
+                    var userNameOrEmail = Convert.ToString(userInfo.userNameOrEmail);
+                    var password = Convert.ToString(userInfo.password);
+                    IUser user = _membershipService.ValidateUser(userNameOrEmail, password);
+                    var result = new
+                    {
+                        user.Id,
+                        user.UserName,
+                        user.Email
+                    };
+                    response.Content = Serialize(result, response);
+                }
             }
             catch (Exception ex)
             {
