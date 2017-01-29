@@ -125,8 +125,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// POST api/AgileCollaboration/Login
         /// example : http://localhost/api/AgileCollaboration/Login 
         /// </summary>
-        /// <param name="userNameOrEmail"></param>
-        /// <param name="password"></param>
+        /// <param name="userInfo"></param>
         /// <returns></returns>
         [HttpPost]
         [AlwaysAccessible]
