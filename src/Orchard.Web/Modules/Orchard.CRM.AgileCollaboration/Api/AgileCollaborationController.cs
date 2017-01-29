@@ -31,6 +31,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         private readonly IUserEventHandler _userEventHandler;
         private readonly IMembershipService _membershipService;
         private readonly IProjectService _projectService;
+        private readonly IAgileCollaborationService _agileCollaborationService;
         public AgileCollaborationController(
             IContentManager contentManager,
             IContentTypesService contentTypesService,
@@ -38,7 +39,8 @@ namespace Orchard.CRM.AgileCollaboration.Api
             IUserEventHandler userEventHandler,
             IMembershipService membershipService,
             IProjectService projectService,
-            IOrchardServices _services
+            IOrchardServices _services,
+            IAgileCollaborationService agileCollaborationService
             )
         {
             _contentManager = contentManager;
@@ -48,6 +50,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             _membershipService = membershipService;
             _projectService = projectService;
             Services = _services;
+            _agileCollaborationService = agileCollaborationService;
 
             Logger = NullLogger.Instance;
             T = NullLocalizer.Instance;
@@ -175,6 +178,34 @@ namespace Orchard.CRM.AgileCollaboration.Api
             return response;
         }
 
+        /// <summary>
+        /// GET api/AgileCollaboration/GetDashBoardViewModel?userName=
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetDashBoardViewModel")]
+        public HttpResponseMessage GetDashBoardViewModel(string userName)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var user = _membershipService.GetUser(userName);
+                if (user != null)
+                {
+                    Services.WorkContext.CurrentUser = user;
+                    var result = _agileCollaborationService.GetDashBoardViewModel();
+                    response.Content = Serialize(result, response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetDashBoardViewModel :" + ex.Message);
+            }
+            return response;
+        }
+        
         private StringContent Serialize(dynamic source, HttpResponseMessage response)
         {
             if (source == null)
