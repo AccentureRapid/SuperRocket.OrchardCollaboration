@@ -69,19 +69,6 @@ namespace Orchard.CRM.AgileCollaboration.Services
         public ILogger Logger { get; set; }
         public Localizer T { get; set; }
         public IOrchardServices Services { get; set; }
-        public dynamic GetAvailableHtmlModules()
-        {
-            var result = _contentManager.Query("HtmlModule").List().Select(contentItem => new
-            {
-                Title = ((dynamic)contentItem).HtmlModulePart.Title.Value,
-                Author = ((dynamic)contentItem).HtmlModulePart.Author.Value,
-                Url = ((dynamic)contentItem).HtmlModulePart.Url.Value,
-                Description = ((dynamic)contentItem).HtmlModulePart.Description.Value,
-                File = GetBaseUrl() + ((dynamic)contentItem).HtmlModulePart.HtmlModuleFile.FirstMediaUrl ?? string.Empty,
-                Ico = GetBaseUrl() +((dynamic)contentItem).HtmlModulePart.HtmlModuleIco.FirstMediaUrl ?? string.Empty
-            });
-            return result;
-        }
 
         public dynamic GetDashBoardViewModel()
         {

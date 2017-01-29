@@ -9,7 +9,6 @@ namespace Orchard.CRM.AgileCollaboration.Services
 {
     public interface IAgileCollaborationService : IDependency
     {
-        dynamic GetAvailableHtmlModules();
         dynamic GetDashBoardViewModel();
     }
 }
