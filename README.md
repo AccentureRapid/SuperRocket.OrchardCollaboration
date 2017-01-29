@@ -137,3 +137,6 @@ API containing below definition
    Example :        
     %Your Orhard Address% + /api/AgileCollaboration/Search?DueDate=Overdue&userName=admin
     %Your Orhard Address% + /api/AgileCollaboration/Search?Status=1&userName=admin
+   Result:
+   Data will be handled(In progress)
+   
