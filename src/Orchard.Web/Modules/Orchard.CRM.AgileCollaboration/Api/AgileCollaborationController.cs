@@ -238,12 +238,15 @@ namespace Orchard.CRM.AgileCollaboration.Api
             {
                 PagerParametersWithSortFields pagerParameters = new PagerParametersWithSortFields();
                 // A simple solution for the bug of sending page paramemter via querystring, if searchModel has value, with unknown reason, the page will not be set
-                if (pagerParameters != null && pagerParameters.Page == null && !string.IsNullOrEmpty(Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value)["page"]))
+                if (pagerParameters != null && pagerParameters.Page == null && Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value).ContainsKey("page"))
                 {
-                    int page;
-                    if (int.TryParse(Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value)["page"], out page))
+                    if (!string.IsNullOrEmpty(Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value)["page"]))
                     {
-                        pagerParameters.Page = page;
+                        int page;
+                        if (int.TryParse(Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value)["page"], out page))
+                        {
+                            pagerParameters.Page = page;
+                        } 
                     }
                 }
 
