@@ -24,6 +24,7 @@ using Orchard.CRM.Core;
 using System.Globalization;
 using Orchard.Core.Title.Models;
 using Orchard.Users.Models;
+using System.Dynamic;
 
 namespace Orchard.CRM.AgileCollaboration.Api
 {
@@ -349,6 +350,20 @@ namespace Orchard.CRM.AgileCollaboration.Api
             model.Pager = this.Services.New.Pager(pager).TotalItemCount(totalCount);
 
             model.Items = new List<dynamic>();
+            //foreach (var contentItem in contentItems)
+            //{
+            //    // ignore search results which content item has been removed or unpublished
+            //    if (contentItem == null)
+            //    {
+            //        totalCount--;
+            //        continue;
+            //    }
+
+            //    var itemModel = this._contentManager.BuildDisplay(contentItem, "TableRow");
+            //    itemModel.Metadata.Type = "Ticket_TableRow_Container";
+            //    model.Items.Add(itemModel);
+            //    itemModel.IsEditable = this._crmContentOwnershipService.CurrentUserCanEditContent(contentItem);
+            //}
             foreach (var contentItem in contentItems)
             {
                 // ignore search results which content item has been removed or unpublished
@@ -358,12 +373,23 @@ namespace Orchard.CRM.AgileCollaboration.Api
                     continue;
                 }
 
-                var itemModel = this._contentManager.BuildDisplay(contentItem, "TableRow");
-                itemModel.Metadata.Type = "Ticket_TableRow_Container";
+                dynamic itemModel = new ExpandoObject();
+                itemModel.Id = contentItem.Id;
+                itemModel.Title = contentItem.As<TicketPart>().Record.Title;
+                itemModel.Description =contentItem.As<TicketPart>().Record.Description;
+                itemModel.Priority = contentItem.As<TicketPart>().Record.PriorityRecord.Name;
+                itemModel.Status = contentItem.As<TicketPart>().Record.StatusRecord.Name;
+                itemModel.CreatedUtc =contentItem.As<CommonPart>().CreatedUtc;
+                itemModel.PublishedUtc =contentItem.As<CommonPart>().PublishedUtc;
+                itemModel.ModifiedUtc =contentItem.As<CommonPart>().ModifiedUtc;
+                itemModel.VersionCreatedUtc= contentItem.As<CommonPart>().VersionCreatedUtc;
+                itemModel.VersionModifiedUtc =contentItem.As<CommonPart>().VersionModifiedUtc;
+                itemModel.VersionPublishedUtc= contentItem.As<CommonPart>().VersionPublishedUtc;
+                itemModel.UserName = contentItem.As<CommonPart>().Owner.UserName;
+
                 model.Items.Add(itemModel);
                 itemModel.IsEditable = this._crmContentOwnershipService.CurrentUserCanEditContent(contentItem);
             }
-
             model.Unassigned = postedSearchModel.Unassigned;
             this.FillBusinessUnitsAndUsers(model, postedSearchModel);
 
