@@ -224,19 +224,24 @@ namespace Orchard.CRM.AgileCollaboration.Api
             return response;
         }
         /// <summary>
-        /// GET api/AgileCollaboration/SearchTickets?DueDate=Overdue 
-        /// GET api/AgileCollaboration/SearchTickets?Status=1 
+        /// GET api/AgileCollaboration/Search?DueDate=Overdue&userName=admin
+        /// GET api/AgileCollaboration/Search?Status=1&userName=admin
         /// </summary>
         /// <param name="pagerParameters"></param>
         /// <param name="searchModel"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage Search([FromUri]PostedTicketSearchViewModel searchModel)
+        public HttpResponseMessage Search([FromUri]PagerParametersWithSortFields pagerParameters,[FromUri]PostedTicketSearchViewModel searchModel,string userName)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {
-                PagerParametersWithSortFields pagerParameters = new PagerParametersWithSortFields();
+                var user = _membershipService.GetUser(userName);
+                if (user != null)
+                {
+                    Services.WorkContext.CurrentUser = user;
+                }
+
                 // A simple solution for the bug of sending page paramemter via querystring, if searchModel has value, with unknown reason, the page will not be set
                 if (pagerParameters != null && pagerParameters.Page == null && Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value).ContainsKey("page"))
                 {
