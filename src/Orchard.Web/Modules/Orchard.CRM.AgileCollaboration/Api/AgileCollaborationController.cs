@@ -231,7 +231,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// <param name="searchModel"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage Search(PostedTicketSearchViewModel searchModel)
+        public HttpResponseMessage Search([FromUri]PostedTicketSearchViewModel searchModel)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
