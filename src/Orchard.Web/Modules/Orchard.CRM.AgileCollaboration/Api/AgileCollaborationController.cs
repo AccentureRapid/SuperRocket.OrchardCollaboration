@@ -90,7 +90,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// <param name="type">Content Type Name</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetContentTypeDefinition")]
         public HttpResponseMessage GetContentTypeDefinition(string type)
         {
             HttpResponseMessage response = new HttpResponseMessage();
@@ -117,7 +116,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// </summary>
         /// <returns>All content type names</returns>
         [HttpGet]
-        [Route("ContentTypes")]
         public IEnumerable<string> ContentTypes()
         {
             return _contentTypesService.GetContentTypes();
@@ -131,7 +129,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Login")]
         [AlwaysAccessible]
         public HttpResponseMessage Login(dynamic userInfo)
         {
@@ -165,7 +162,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetMyProjects")]
         public HttpResponseMessage GetMyProjects(string userName)
         {
             HttpResponseMessage response = new HttpResponseMessage();
@@ -207,7 +203,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// <param name="userName"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetDashBoardViewModel")]
         public HttpResponseMessage GetDashBoardViewModel(string userName)
         {
             HttpResponseMessage response = new HttpResponseMessage();
@@ -236,12 +231,12 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// <param name="searchModel"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("SearchTickets")]
-        public HttpResponseMessage Search(PagerParametersWithSortFields pagerParameters, PostedTicketSearchViewModel searchModel)
+        public HttpResponseMessage Search(PostedTicketSearchViewModel searchModel)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {
+                PagerParametersWithSortFields pagerParameters = new PagerParametersWithSortFields();
                 // A simple solution for the bug of sending page paramemter via querystring, if searchModel has value, with unknown reason, the page will not be set
                 if (pagerParameters != null && pagerParameters.Page == null && !string.IsNullOrEmpty(Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value)["page"]))
                 {
