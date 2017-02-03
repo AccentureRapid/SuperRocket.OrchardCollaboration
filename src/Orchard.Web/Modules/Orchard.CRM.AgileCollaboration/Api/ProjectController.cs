@@ -90,6 +90,32 @@ namespace Orchard.CRM.AgileCollaboration.Api
         public IOrchardServices Services { get; set; }
 
         /// <summary>
+        /// GET api/Basic/GetProject
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage GetProject(int projectId)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var project = _projectService.GetProject(projectId);
+                var result = new {
+                    project.Id,
+                    project.Title,
+                    project.Description
+                };
+                response.Content = Serialize(result, response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetProject :" + ex.StackTrace);
+            }
+            return response;
+        }
+
+        /// <summary>
         /// GET api/Basic/GetProjectWiki
         /// </summary>
         /// <returns></returns>
