@@ -39,8 +39,8 @@ namespace Orchard.CRM.Dashboard.Handlers
                     {
                         continue;
                     }
-
                     ContentItem newPortletContentItem = null;
+
                     if (newPortletContentItemTemplate.ContentItem.ContentType == Consts.SidebarProjectionPortletTemplateType)
                     {
                         newPortletContentItem = contentManager.Create(Consts.SidebarProjectionPortletType);

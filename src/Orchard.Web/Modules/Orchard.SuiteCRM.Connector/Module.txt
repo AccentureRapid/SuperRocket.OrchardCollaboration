@@ -2,7 +2,7 @@
 AntiForgery: enabled
 Author: Siyamand Ayubi
 Website: http://orchardcollaboration.com
-Version: 1.1
+Version: 1.0
 OrchardVersion: 1.9.2
 Dependencies: Orchard.CRM.Core, Orchard.CRM.Project, Orchard.Users, Orchard.Roles
 Description: It is a connector for SugarCRM databases

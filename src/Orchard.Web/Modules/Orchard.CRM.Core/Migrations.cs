@@ -11,19 +11,34 @@ namespace Orchard.CRM.Core
     using System.Linq;
     using System.Data;
     using Orchard.Environment.Configuration;
-
+    using ContentManagement;
+    using Logging;
     public class Migrations : DataMigrationImpl
     {
         private readonly Lazy<ICRMSetup> crmSetup;
         private readonly IRepository<StatusRecord> statusRepository;
+        private readonly Lazy<IRepository<ServiceRecord>> serviceRepository;
+        private readonly Lazy<IRepository<TicketPartRecord>> ticketRepository;
+        private readonly Lazy<IContentManager> lazyContentManager;
         private readonly ShellSettings shellSettings;
 
-        public Migrations(Lazy<ICRMSetup> crmSetup, IRepository<StatusRecord> statusRepository, ShellSettings shellSettings)
+        public Migrations(
+            Lazy<IContentManager> contentManager,
+            Lazy<IRepository<TicketPartRecord>> ticketRepository,
+            Lazy<IRepository<ServiceRecord>> serviceRepository,
+            Lazy<ICRMSetup> crmSetup,
+            IRepository<StatusRecord> statusRepository,
+            ShellSettings shellSettings)
         {
+            this.lazyContentManager = contentManager;
+            this.ticketRepository = ticketRepository;
+            this.serviceRepository = serviceRepository;
             this.shellSettings = shellSettings;
             this.crmSetup = crmSetup;
             this.statusRepository = statusRepository;
+            Logger = NullLogger.Instance;
         }
+        public ILogger Logger { get; set; }
 
         public int Create()
         {
@@ -85,7 +100,10 @@ namespace Orchard.CRM.Core
                           .Column<string>("Body", c => c.NotNull().WithLength(2000)));
 
             this.crmSetup.Value.AddBasicData();
-            return 5;
+
+            CreateServiceType();
+
+            return 8;
         }
 
         public int UpdateFrom2()
@@ -196,6 +214,95 @@ namespace Orchard.CRM.Core
             return 6;
         }
 
+        public int UpdateFrom6()
+        {
+            CreateServiceType();
+            try
+            {
+                SchemaBuilder.AlterTable("TicketPartRecord", table =>
+                table.AddColumn<DateTime>("ClosedDateTime", c => c.Nullable()));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                Logger.Error(ex.StackTrace);
+                if (ex.InnerException != null)
+                {
+                    Logger.Error(ex.InnerException.Message);
+                }
+            }
+
+            try
+            {
+                var serviceRecords = serviceRepository.Value.Table.ToList();
+
+                var contentManger = this.lazyContentManager.Value;
+
+                foreach (var serviceRecord in serviceRecords)
+                {
+                    var serviceContentItem = contentManger.Create("Service", VersionOptions.Draft);
+                    var servicePart = serviceContentItem.As<ServicePart>();
+                    servicePart.Record.Name = serviceRecord.Name;
+                    servicePart.Record.Description = serviceRecord.Description;
+
+                    contentManger.Publish(serviceContentItem);
+
+                    // update tickets
+                    var tickets = ticketRepository.Value.Table.Where(c => c.Service.Id == serviceRecord.Id).ToList();
+                    foreach (var ticket in tickets)
+                    {
+                        ticket.Service = new ServicePartRecord { Id = servicePart.Id };
+                    }
+
+                    ticketRepository.Value.Flush();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                Logger.Error(ex.StackTrace);
+                if (ex.InnerException != null)
+                {
+                    Logger.Error(ex.InnerException.Message);
+                }
+            }
+
+            return 8;
+        }
+
+        private void CreateServiceType()
+        {
+            try
+            {
+                // Create ServiceRecord table
+                SchemaBuilder.CreateTable("ServicePartRecord", table => table
+                    .ContentPartRecord()
+                    .Column<string>("Name", c => c.WithLength(50))
+                    .Column<string>("Description", c => c.WithLength(500))
+                    .Column<bool>("Deleted", c => c.WithDefault(false).NotNull())
+                    );
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                Logger.Error(ex.StackTrace);
+                if (ex.InnerException != null)
+                {
+                    Logger.Error(ex.InnerException.Message);
+                }
+            }
+
+            ContentDefinitionManager.AlterPartDefinition("ServicePart", cfg => cfg.Attachable());
+
+            ContentDefinitionManager.AlterTypeDefinition("Service",
+                 cfg => cfg
+                     .WithPart("CommonPart")
+                     .WithPart("IdentityPart")
+                     .WithPart("ServicePart")
+                     .DisplayedAs("Service")
+                 );
+        }
+
         private void CreateActivityHistory()
         {
             // Create TeamPartRecord table
@@ -213,8 +320,8 @@ namespace Orchard.CRM.Core
             // Activity Stream index
             SchemaBuilder.AlterTable("ActivityStreamRecord", table => table.CreateIndex(
                 "ActivityStreamRecord_MainIndex",
-                new string[] 
-                { 
+                new string[]
+                {
                     "RelatedVersion_Id",
                     "RelatedContent_Id",
                     "User_Id",
@@ -295,7 +402,7 @@ namespace Orchard.CRM.Core
             // CRMCommentPartRecord main index
             SchemaBuilder.AlterTable("CRMCommentPartRecord", table => table.CreateIndex(
                 "CRMCommentPartRecord_MainIndex",
-                new string[] 
+                new string[]
                 {
                     "User_Id",
                     "CRMCommentsPartRecord_Id",
@@ -311,14 +418,6 @@ namespace Orchard.CRM.Core
 
             ContentDefinitionManager.AlterPartDefinition("CRMCommentPart", builder => builder.Attachable());
             ContentDefinitionManager.AlterPartDefinition("CRMCommentsPart", builder => builder.Attachable());
-
-            // Create ServiceRecord table
-            SchemaBuilder.CreateTable("ServiceRecord", table => table
-                .Column<int>("Id", c => c.Identity().PrimaryKey())
-                .Column<string>("Name", c => c.WithLength(50))
-                .Column<string>("Description", c => c.WithLength(500))
-                .Column<bool>("Deleted", c => c.WithDefault(false).NotNull())
-                );
 
             // Create Priority table
             SchemaBuilder.CreateTable("PriorityRecord", table => table
@@ -368,7 +467,7 @@ namespace Orchard.CRM.Core
                 .Column<int>("Service_Id", c => c.Nullable())
                 .Column<int>("StatusRecord_Id", c => c.Nullable())
                 .Column<string>("Description", c => c.Unlimited())
-                );
+                .Column<DateTime>("ClosedDateTime", c => c.Nullable()));
 
             // Identity index
             SchemaBuilder.AlterTable("TicketPartRecord", table => table.CreateIndex(
@@ -388,7 +487,7 @@ namespace Orchard.CRM.Core
             // main index
             SchemaBuilder.AlterTable("TicketPartRecord", table => table.CreateIndex(
                 "Ticket_MainIndex",
-                new string[] 
+                new string[]
                 {
                     "StatusRecord_Id",
                     "DueDate",
@@ -423,7 +522,7 @@ namespace Orchard.CRM.Core
             // ContentItemPermissionDetailRecord main index
             SchemaBuilder.AlterTable("ContentItemPermissionDetailRecord", table => table.CreateIndex(
                 "ContentItemPermissionDetailRecord_MainIndex",
-                new string[] 
+                new string[]
                 {
                     "BusinessUnit_Id",
                     "User_Id",
@@ -444,7 +543,7 @@ namespace Orchard.CRM.Core
             // ContentItemPermissionPartRecord main index
             SchemaBuilder.AlterTable("ContentItemPermissionPartRecord", table => table.CreateIndex(
                 "ContentItemPermissionPartRecord_MainIndex",
-                new string[] 
+                new string[]
                 {
                     "Ticket_Id",
                     "HasOwner"

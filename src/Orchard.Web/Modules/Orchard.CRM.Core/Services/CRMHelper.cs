@@ -12,6 +12,7 @@ namespace Orchard.CRM.Core.Services
     using Projections.Models;
     using Reporting.Models;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Globalization;
@@ -23,7 +24,7 @@ namespace Orchard.CRM.Core.Services
     {
         public static readonly string OrchardCollaborationEmailMessageType = "OrchardCollaboration.Email";
         public static readonly string OrcharCollaborationDefinitiveEmailMessageType = "DefinitiveOrchardCollaboration.Email";
-        
+
         public static void AddModelStateErrors(ModelStateDictionary modelState, AjaxMessageViewModel ajaxMessageModel)
         {
             foreach (var errorGroup in modelState.Where(c => c.Value.Errors.Count > 0))
@@ -92,6 +93,71 @@ namespace Orchard.CRM.Core.Services
             }
 
             return GetFullNameOfUser(user.As<UserPart>());
+        }
+
+        public static IList<KeyValuePair<int?, double>> RunGroupByQuery(ITransactionManager transactionManager, IHqlQuery query, AggregateMethods aggregation, string propertyPath, string state, string propertyAlias)
+        {
+            DefaultHqlQuery defaultQuery = query as DefaultHqlQuery;
+            var queryHql = defaultQuery.ToHql(true);
+
+            string aggregateMethod = string.Empty;
+            switch (aggregation)
+            {
+                case AggregateMethods.Average:
+                    aggregateMethod = "AVE";
+                    break;
+                case AggregateMethods.Sum:
+                    aggregateMethod = "SUM";
+                    break;
+                case AggregateMethods.Minimum:
+                    aggregateMethod = "MIN";
+                    break;
+                case AggregateMethods.Maximum:
+                    aggregateMethod = "MAX";
+                    break;
+                case AggregateMethods.Count:
+                default:
+                    aggregateMethod = "COUNT";
+                    break;
+            };
+
+            string aggregateField = "*";
+            if (!string.IsNullOrEmpty(state))
+            {
+                dynamic stateObj = JObject.Parse(System.Web.HttpUtility.UrlDecode(state));
+                aggregateField = "ki." + stateObj.AggregationField;
+            }
+
+            var hql = @"select {4}.Id as GroupKey, {2}({3}) as GroupValue
+                        from Orchard.ContentManagement.Records.ContentItemVersionRecord as kiv
+                        join kiv.ContentItemRecord as ki
+                        join ki.{0} as {4}
+                        where (kiv.Published = True) AND kiv.Id in ({1})
+                        group by {4}.Id";
+
+            hql = string.Format(CultureInfo.InvariantCulture, hql, propertyPath, queryHql, aggregateMethod, aggregateField, propertyAlias);
+
+            var session = transactionManager.GetSession();
+            var result = session.CreateQuery(hql)
+                   .SetCacheable(false)
+                   .SetResultTransformer(NHibernate.Transform.Transformers.AliasToEntityMap)
+                   .List<IDictionary>();
+
+            List<KeyValuePair<int?, double>> returnValue = new List<KeyValuePair<int?, double>>();
+
+            foreach (var group in result)
+            {
+                double value = group["GroupValue"] != null && !string.IsNullOrEmpty(group["GroupValue"].ToString()) ?
+                    double.Parse(group["GroupValue"].ToString()) :
+                    0;
+
+                int? key = group["GroupKey"] != null ? (int?)int.Parse(group["GroupKey"].ToString()) : null;
+
+                returnValue.Add(new KeyValuePair<int?, double>(key, value));
+            }
+
+            return returnValue;
+
         }
 
         public static DateTime SetSiteTimeZone(WorkContext workContext, DateTime dateTime)

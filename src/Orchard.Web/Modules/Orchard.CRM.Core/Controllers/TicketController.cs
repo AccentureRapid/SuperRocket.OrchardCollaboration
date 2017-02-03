@@ -288,7 +288,7 @@ namespace Orchard.CRM.Core.Controllers
                     // serviceId
                     if (model.ServiceId.HasValue)
                     {
-                        ticketPart.Record.Service = new ServiceRecord { Id = model.ServiceId.Value };
+                        ticketPart.Record.Service = new ServicePartRecord { Id = model.ServiceId.Value };
                     }
                     else if (model.UpdateServiceId)
                     {

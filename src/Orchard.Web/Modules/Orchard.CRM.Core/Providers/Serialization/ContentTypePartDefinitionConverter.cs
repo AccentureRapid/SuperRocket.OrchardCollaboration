@@ -13,12 +13,14 @@ namespace Orchard.CRM.Core.Providers.Serialization
         {
             writer.WriteStartObject();
             ContentTypePartDefinition contentTypePartDefinition = value as ContentTypePartDefinition;
+            if (contentTypePartDefinition.ContentTypeDefinition != null)
+            {
+                // PartDefinition
+                Utility.WriteProperty("PartDefinition", contentTypePartDefinition.PartDefinition, writer, serializer);
 
-            // PartDefinition
-            Utility.WriteProperty("PartDefinition", contentTypePartDefinition.PartDefinition, writer, serializer);
-
-            // Settings
-            Utility.WriteProperty("Settings", contentTypePartDefinition.Settings, writer, serializer);
+                // Settings
+                Utility.WriteProperty("Settings", contentTypePartDefinition.Settings, writer, serializer);
+            }
 
             writer.WriteEnd();
         }

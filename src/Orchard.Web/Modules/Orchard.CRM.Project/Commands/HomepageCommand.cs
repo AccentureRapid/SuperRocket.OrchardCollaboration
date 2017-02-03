@@ -17,7 +17,6 @@ namespace Orchard.CRM.Project.Commands
 {
     public class HomepageCommand : DefaultOrchardCommandHandler
     {
-        private readonly ISiteService _siteService;
         private readonly WidgetCommands widgetCommands;
 
         [OrchardSwitch]
@@ -63,19 +62,17 @@ namespace Orchard.CRM.Project.Commands
             IContentManager contentManager)
         {
             widgetCommands = new WidgetCommands(widgetsService, siteService, membershipService, menuService, contentManager);
-            _siteService = siteService;
-    }
+        }
 
         [CommandName("orchardcollaboration homepage create")]
         [CommandHelp("orchardcollaboration homepage create <type> /Title:<title> /Name:<name> /Zone:<zone> /Position:<position> /Layer:<layer> [/Identity:<identity>] [/RenderTitle:true|false] [/Owner:<owner>] [/Text:<text>] [/UseLoremIpsumText:true|false] [/MenuName:<name>]\r\n\t" + "Creates a new widget")]
         [OrchardSwitches("Title,Name,Zone,Position,Layer,Identity,Owner,Text,UseLoremIpsumText,MenuName,RenderTitle")]
         public void Create()
         {
-            
             widgetCommands.Name = this.Name;
             widgetCommands.Title = this.Title;
             widgetCommands.RenderTitle = this.RenderTitle;
-            widgetCommands.Text = string.IsNullOrEmpty(this.Text) ? string.Format(DefaultText, _siteService.GetSiteSettings().BaseUrl): this.Text;
+            widgetCommands.Text = string.IsNullOrEmpty(this.Text) ? DefaultText : this.Text;
             widgetCommands.Owner = this.Owner;
             widgetCommands.Zone = this.Zone;
             widgetCommands.Publish = this.Publish;
@@ -108,7 +105,7 @@ namespace Orchard.CRM.Project.Commands
 <li>Very customizable (Custom fields, Custom forms, custom reports, ...)</li>
 <li>Strong integration with Orchard Workflows</li>
 </ul>
-<p>for complete list of the features please visit <a href='{0}'>Orchard Collaboration website</a>.</p>
+<p>for complete list of the features please visit <a href='http://OrchardCollaboration.com'>Orchard Collaboration website</a>.</p>
 </div>
 </div>
 <div class='panel panel-default'>
@@ -123,7 +120,7 @@ Some of the nice features that helps us customizing Orchard Collaborations are a
 <li>Custom Themes</li>
 <li>Strong &amp; flexible Workflow management module</li>
 </ul>
-<p>For more information about Orchard CMS please visit <a href='http://orchardproject.net'>Orchardproject.net website</a></p>
+<p>For more information about Orchard CMS please visit <a href='http://orchardproject.net//'>Orchardproject.net website</a></p>
 </div>
 </div>
 ";

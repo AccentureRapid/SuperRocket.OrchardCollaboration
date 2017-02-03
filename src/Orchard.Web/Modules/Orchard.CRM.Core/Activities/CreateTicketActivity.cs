@@ -129,7 +129,7 @@ namespace Orchard.CRM.Core.Activities
             int? serviceId = GetValueFromActivityContext(activityContext, CreateTicketActivityForm.ServiceId);
             if (serviceId.HasValue)
             {
-                ticketPart.Record.Service = new ServiceRecord { Id = serviceId.Value };
+                ticketPart.Record.Service = new ServicePartRecord { Id = serviceId.Value };
             }
 
             // status
@@ -143,10 +143,22 @@ namespace Orchard.CRM.Core.Activities
             AttachToProjectPart attachToProjectPart = ticket.As<AttachToProjectPart>();
             if (attachToProjectPart != null)
             {
-                int? projectId = GetValueFromActivityContext(activityContext, CreateTicketActivityForm.ProjectId);
-                if (projectId.HasValue)
+                string valueString = activityContext.GetState<string>(CreateTicketActivityForm.ProjectId);
+
+                // check wether the value is id or identity                
+                int projectId;
+
+                if (!int.TryParse(valueString, out projectId))
                 {
-                    attachToProjectPart.Record.Project = new ProjectPartRecord { Id = projectId.Value };
+                    var project = this.contentManager.Query<IdentityPart>().Where<IdentityPartRecord>(c => c.Identifier == valueString).Slice(0, 1).FirstOrDefault();
+                    if (project != null)
+                    {
+                        projectId = project.ContentItem.Id;
+                    }
+                }
+                if (projectId != default(int))
+                {
+                    attachToProjectPart.Record.Project = new ProjectPartRecord { Id = projectId };
                 }
             }
 

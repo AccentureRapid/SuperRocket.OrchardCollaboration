@@ -141,6 +141,7 @@ namespace Orchard.CRM.Project
                    c.WithSetting("AttachToProjectPartSettings.HiddenInEditMode", "true")
                    .WithSetting("AttachToProjectPartSettings.HiddenInDisplayModel", "true"))
                .WithPart("ContainerPart")
+               .WithPart("IdentityPart")
                .DisplayedAs("Project Detail")
                .Creatable(false));
 
@@ -189,6 +190,7 @@ namespace Orchard.CRM.Project
             ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectContentType,
                 cfg => cfg
                 .WithPart("CommonPart")
+                .WithPart("IdentityPart")
                 .WithPart("ProjectPart")
                 .WithPart("ContentItemPermissionPart")
                 .DisplayedAs("Project"));
@@ -236,7 +238,7 @@ namespace Orchard.CRM.Project
                     .WithField(FieldNames.UserTelField, c => c.WithDisplayName("Tel").OfType("InputField"))
                     .WithField(FieldNames.UserTags, c => c.WithDisplayName("Tags").OfType("InputField").WithSetting("InputFieldSettings.Hint", "Comma Seperated Tags"))
                     .WithField(FieldNames.UserSkypeIdField, c => c.WithDisplayName("Skype Id").OfType("InputField"))
-                    .WithField(FieldNames.UserMobileField, c => c.WithDisplayName("Mobile:").OfType("InputField"))
+                    .WithField(FieldNames.UserMobileField, c => c.WithDisplayName("Mobile").OfType("InputField"))
                 );
 
             // FolderPartRecord index
@@ -274,9 +276,10 @@ namespace Orchard.CRM.Project
                  .WithPart("TitlePart")
                  .WithPart("ProjectionWithDynamicSortPart")
                  .WithPart("ContainablePart")
+                 .WithPart("IdentityPart")
                  .DisplayedAs("Project-Dashboard Projection Protlet Template")
-                 .Creatable(true)
-                 .Listable(true));
+                 .Creatable(false)
+                 .Listable(false));
 
             ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectDashboardReportViewerPortletContentType,
                cfg => cfg
@@ -291,11 +294,12 @@ namespace Orchard.CRM.Project
                 cfg => cfg
                .WithPart("CommonPart")
                .WithPart("TitlePart")
+               .WithPart("IdentityPart")
                .WithPart("DataReportViewerPart")
                .WithPart("ContainablePart")
                .DisplayedAs("Project-Dashboard Summary Portlet Template")
-               .Creatable(true)
-               .Listable(true));
+               .Creatable(false)
+               .Listable(false));
 
             ContentDefinitionManager.AlterPartDefinition("ProjectDashboardEditorPart", builder => builder.Attachable());
 
@@ -348,6 +352,41 @@ namespace Orchard.CRM.Project
                  .Creatable(false));
 
             return 6;
+        }
+
+        public int UpdateFrom6()
+        {
+            ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectDetailContentType,
+              cfg => cfg.WithPart("IdentityPart"));
+
+            ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectContentType,
+                cfg => cfg.WithPart("IdentityPart"));
+
+            ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectDashboardProjectionPortletTemplateContentType,
+                 cfg => cfg
+                 .WithPart("IdentityPart"));
+
+            ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectDashboardReportViewerPortletTemplateContentType,
+                cfg => cfg
+               .WithPart("IdentityPart"));
+
+            return 7;
+        }
+
+        public int UpdateFrom7()
+        {
+            ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectDashboardProjectionPortletTemplateContentType,
+                  cfg => cfg
+                  .Creatable(false)
+                  .Listable(false));
+
+
+            ContentDefinitionManager.AlterTypeDefinition(ContentTypes.ProjectDashboardReportViewerPortletTemplateContentType,
+                 cfg => cfg
+                .Creatable(false)
+                .Listable(false));
+
+            return 8;
         }
 
         private void CreateMilestoneAndProjectMenuTypes()

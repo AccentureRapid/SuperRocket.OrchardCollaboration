@@ -15,5 +15,6 @@ namespace Orchard.CRM.Dashboard
         public const string AddedRecentlyDiscussions = "System_AddedRecentlyDiscussions";
         public const string UpdatedRecentlyWikis = "System_UpdatedRecentlyWikis";
         public const string MyProjects = "System_MyProjects";
+        public const string DashboardList = "System_GenericDashboardList";
     }
 }

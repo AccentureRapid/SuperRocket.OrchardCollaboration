@@ -14,10 +14,10 @@
 
   <Feature enable="Orchard.Blogs,Orchard.Comments,Orchard.Tags,Orchard.Alias,Orchard.Autoroute,
                    TinyMce,Orchard.MediaLibrary,Orchard.ContentPicker,Orchard.PublishLater,
-                   Orchard.jQuery,Orchard.Widgets,Orchard.ContentTypes,Orchard.Indexing,Orchard.JobsQueue,
+                   Orchard.jQuery,Orchard.Widgets,Orchard.ContentTypes,Orchard.Indexing,
                    Orchard.Scripting,Orchard.Scripting.Lightweight,PackagingServices,Orchard.Packaging,
                    Orchard.Projections,Orchard.Fields,Orchard.OutputCache,Orchard.Taxonomies,Orchard.Workflows,Orchard.Workflows.Timer,
-                   S22.IMAP, Orchard.Email, Orchard.Search, Lucene, Orchard.Tokens, Orchard.CRM.Core,Orchard.CRM.Dashboard, 
+                   S22.IMAP, Orchard.Email, Orchard.Search, Lucene, Orchard.Tokens, Orchard.CRM.Core,Orchard.CRM.Dashboard,OC.SVNConnector,OC.GITConnector,OC.GITConnector.Tickets,OC.SVNConnector.Tickets,
                    Orchard.Taxonomies, Orchard.Reporting, Orchard.Lists, Orchard.CRM.Project, Orchard.CRM.Notification, Orchard.SuiteCRM.Connector, Orchard.Recipes,Orchard.CustomForms,Orchard.Layouts,Orchard.Layouts.Tokens,
                    Bootstrap" />
   <Metadata>
@@ -41,6 +41,34 @@
       <BodyPart BodyPartSettings.FlavorDefault="html" />
     </Parts>
   </Metadata>
+  <Workflows>
+    <Workflow Name="Connect Git Commit to ticket" Enabled="true">
+      <Activities>
+        <Activity Id="16" Name="ContentPublished" Start="true" X="405" Y="53">
+          <State>{"ContentTypes":"GITCommit"}</State>
+        </Activity>
+        <Activity Id="17" Name="ConnectGITCommitToTicket" Start="false" X="312" Y="263">
+          <State>{}</State>
+        </Activity>
+      </Activities>
+      <Transitions>
+        <Transition SourceActivityId="16" SourceEndpoint="Done" DestinationActivityId="17" DestinationEndpoint="" />
+      </Transitions>
+    </Workflow>
+    <Workflow Name="Connect SVN Commit to tickets" Enabled="true">
+      <Activities>
+        <Activity Id="20" Name="ContentPublished" Start="true" X="429" Y="48">
+          <State>{"ContentTypes":"SVNLog"}</State>
+        </Activity>
+        <Activity Id="21" Name="ConnectSVNLogToTicket" Start="false" X="232" Y="232">
+          <State>{}</State>
+        </Activity>
+      </Activities>
+      <Transitions>
+        <Transition SourceActivityId="20" SourceEndpoint="Done" DestinationActivityId="21" DestinationEndpoint="" />
+      </Transitions>
+    </Workflow>
+  </Workflows>
 
   <Settings />
 

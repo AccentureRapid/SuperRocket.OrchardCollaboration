@@ -113,6 +113,7 @@
     <Content Include="Scripts\fileuploader.js" />
     <Content Include="Scripts\jstree.js" />
     <Content Include="packages.config" />
+    <Content Include="App_Data\Localization\de-DE\orchard.module.po" />
     <None Include="Scripts\JSX\CRMProjectComponents.jsx" />
     <Content Include="Scripts\CRMProjectComponents.js" />
     <Content Include="Scripts\JSX\readme.txt" />
@@ -133,7 +134,8 @@
     <Content Include="Styles\JsTree\32px.png" />
     <Content Include="Styles\JsTree\40px.png" />
     <Content Include="Styles\JsTree\style.css" />
-    <Content Include="Styles\JsTree\style.min.css" />
+    <Content Include="Styles\JsTree\jstree-style.css" />
+    <Content Include="Styles\JsTree\jstree-style.min.css" />
     <Content Include="Styles\JsTree\throbber.gif" />
     <Content Include="Styles\project.css" />
     <Content Include="Web.config" />
@@ -156,6 +158,7 @@
     <Content Include="Views\AdminUser\Edit.cshtml" />
     <Content Include="Views\AdminUser\Index.cshtml" />
     <Content Include="Views\EditorTemplates\Parts\Roles.UserRoles.cshtml" />
+    <Content Include="Views\Parts\Followers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Orchard\Orchard.Framework.csproj">

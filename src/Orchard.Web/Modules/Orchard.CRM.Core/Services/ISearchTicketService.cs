@@ -1,4 +1,5 @@
 using Orchard.ContentManagement;
+using Orchard.CRM.Core.Models;
 using Orchard.CRM.Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,7 @@ namespace Orchard.CRM.Core.Services
         int CountByDatabase(PostedTicketSearchViewModel searchModel);
         IHqlQuery CreateQuery(PostedTicketSearchViewModel searchModel);
         string CreateLucenePermissionQuery(PostedTicketSearchViewModel searchModel);
+
+        TicketPart GetByTicketNumber(int number);
     }
 }

@@ -33,50 +33,6 @@ namespace Orchard.CRM.Dashboard.Drivers
         {
         }
 
-        protected override DriverResult Editor(SidebarDashboardPart part, dynamic shapeHelper)
-        {
-            if (!_crmContentOwnershipService.IsCurrentUserAdvanceOperator())
-            {
-                return null;
-            }
-
-            List<string> currentPortlets =
-                string.IsNullOrEmpty(part.SidebarPortletList) ?
-                    new List<string>() :
-                    part.SidebarPortletList.Split(',').Select(c => c.ToUpper(CultureInfo.InvariantCulture).Trim()).ToList();
-
-            var portlets = _orchardServices
-                .ContentManager
-                .HqlQuery()
-                .ForType(Consts.SidebarProjectionPortletTemplateType, Consts.SidebarStaticPortletType)
-                .List()
-                .Select(c => c.As<TitlePart>());
-
-            List<EditDashboardViewModel> model = new List<EditDashboardViewModel>();
-
-
-            // we assume all portlets have TitleParts
-            foreach (var item in portlets.Where(c => c.Is<TitlePart>()))
-            {
-                string title = string.IsNullOrEmpty(item.Title) ? string.Empty : item.Title.ToUpper(CultureInfo.InvariantCulture).Trim();
-                EditDashboardViewModel modelMember = new EditDashboardViewModel();
-                modelMember.PortletId = item.Id;
-                modelMember.Title = item.As<TitlePart>().Title;
-                modelMember.IsChecked = currentPortlets.Contains(title);
-                modelMember.Order = modelMember.IsChecked ? currentPortlets.IndexOf(item.Title) : -int.MaxValue;
-
-                model.Add(modelMember);
-            }
-
-            model = model.OrderByDescending(c => c.Order).ToList();
-
-            return ContentShape("Parts_SidebarDashboard_Edit",
-                        () => shapeHelper.EditorTemplate(
-                            TemplateName: "Parts/SidebarDashboard",
-                            Model: model,
-                            Prefix: Prefix));
-        }
-
         protected override DriverResult Editor(SidebarDashboardPart part, IUpdateModel updater, dynamic shapeHelper)
         {
             if (!_crmContentOwnershipService.IsCurrentUserAdvanceOperator())
@@ -92,6 +48,28 @@ namespace Orchard.CRM.Dashboard.Drivers
             part.SidebarPortletList = string.Join(",", portlets.Select(c => c.Title));
 
             return Editor(part, shapeHelper);
+        }
+
+        protected override string[] GetCurrentPortlets(SidebarDashboardPart part)
+        {
+            return string.IsNullOrEmpty(part.SidebarPortletList) ?
+                   new string[]{}:
+                   part.SidebarPortletList.Split(',').Select(c => c.ToUpper(CultureInfo.InvariantCulture).Trim()).ToArray();           
+        }
+
+        protected override string[] GetPortletTypes()
+        {
+            return new[] {Consts.SidebarProjectionPortletTemplateType, Consts.SidebarStaticPortletType};
+        }
+
+        public override string GetEditorShapeType()
+        {
+            return "Parts_SidebarDashboard_Edit";
+        }
+
+        public override string GetEditorShapeAddress()
+        {
+            return "Parts/SidebarDashboard";
         }
     }
 }

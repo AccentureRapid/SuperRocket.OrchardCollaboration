@@ -138,7 +138,8 @@ namespace Orchard.CRM.Project.Drivers
             var statusRecords = this.basicDataService.GetStatusRecords().ToList();
             ticketsModel.StatusRecords = statusRecords;
 
-            shapes.Add(ContentShape("Parts_Milestone_Tickets", () => shapeHelper.Parts_Milestone_Tickets(Model: JsonConvert.SerializeObject(ticketsModel))));
+            string data = JsonConvert.SerializeObject(ticketsModel);
+            shapes.Add(ContentShape("Parts_Milestone_Tickets", () => shapeHelper.Parts_Milestone_Tickets(Model: data)));
 
             return this.Combined(shapes.ToArray());
         }
@@ -205,7 +206,8 @@ namespace Orchard.CRM.Project.Drivers
             statusRecords.Insert(0, new StatusRecord { Id = 0, OrderId = 0, Name = T("No Status").Text });
             ticketsModel.StatusRecords = statusRecords;
 
-            shapes.Add(ContentShape("Parts_Milestone_GanttChart", () => shapeHelper.Parts_Milestone_GanttChart(Model: JsonConvert.SerializeObject(ticketsModel))));
+            string data = JsonConvert.SerializeObject(ticketsModel);
+            shapes.Add(ContentShape("Parts_Milestone_GanttChart", () => shapeHelper.Parts_Milestone_GanttChart(Model: data)));
 
             return this.Combined(shapes.ToArray());
         }

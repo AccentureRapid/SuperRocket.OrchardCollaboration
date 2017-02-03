@@ -25,7 +25,8 @@ namespace Orchard.CRM.Core.Providers.Serialization
                     continue;
                 }
 
-                if (item is IShape || item is ContentItem || JToken.FromObject(item).Type == JTokenType.Object)
+                var type = item.GetType();
+                if ((item is IShape || item is ContentItem) || !(type.IsPrimitive || type == typeof(Decimal) || type == typeof(String)))
                 {
                     serializer.Serialize(writer, item);
                 }
@@ -48,7 +49,8 @@ namespace Orchard.CRM.Core.Providers.Serialization
                 return;
             }
 
-            if (value is IShape || value is ContentItem || JToken.FromObject(value).Type == JTokenType.Object)
+            var type = value.GetType();
+            if ((value is IShape || value is ContentItem) || !(type.IsPrimitive || type == typeof(Decimal) || type == typeof(String)))
             {
                 serializer.Serialize(writer, value);
             }

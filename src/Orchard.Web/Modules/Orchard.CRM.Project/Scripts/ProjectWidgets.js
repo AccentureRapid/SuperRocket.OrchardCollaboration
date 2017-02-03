@@ -108,6 +108,7 @@ window.crm = window.crm || {};
             var besideContentListContainer = $("." + _self.options.besideContentListContainerClass);
             var folderList = besideContentListContainer.find("." + _self.options.folderListClass);
 
+            besideContentListContainer.height(besideContentListContainer.parent().height());
             folderList.on("loaded.jstree", function (event, data) {
 
                 /** 
@@ -155,20 +156,20 @@ window.crm = window.crm || {};
 
             //if (deviceWidth >= 500) {
             expandButton.on("click touchstart", function () {
-                    besideContentListContainer
-                        .removeClass(_self.options.besideContentListContainerCollapsedClass)
-                        .addClass(_self.options.besideContentListContainerClass);
+                besideContentListContainer
+                    .removeClass(_self.options.besideContentListContainerCollapsedClass)
+                    .addClass(_self.options.besideContentListContainerClass);
 
-                    $("#" + _self.options.expandButtonId).addClass("hidden");
-                });
+                $("#" + _self.options.expandButtonId).addClass("hidden");
+            });
 
             collapsedButton.on("click touchstart", function () {
-                    besideContentListContainer
-                        .removeClass(_self.options.besideContentListContainerClass)
-                        .addClass(_self.options.besideContentListContainerCollapsedClass);
+                besideContentListContainer
+                    .removeClass(_self.options.besideContentListContainerClass)
+                    .addClass(_self.options.besideContentListContainerCollapsedClass);
 
-                    $("#" + _self.options.expandButtonId).removeClass("hidden");
-                });
+                $("#" + _self.options.expandButtonId).removeClass("hidden");
+            });
             //}
             //else {
             //    // mobile devices
@@ -512,11 +513,13 @@ window.crm = window.crm || {};
                         if (isFollowed == "true") {
                             link.href = $link.data("followlink");
                             $link.text($link.data("followtitle"));
+                            $link.addClass(model.options.unFollowClass).removeClass(model.options.followClass);
                             $link.data("follow", "false");
                         }
                         else {
                             $link.data("follow", "true");
                             link.href = $link.data("unfollowlink");
+                            $link.addClass(model.options.followClass).removeClass(model.options.unFollowClass);
                             $link.text($link.data("unfollowtitle"));
                         }
                     }
@@ -531,11 +534,13 @@ window.crm = window.crm || {};
         var _self = this;
 
         this.options = {
-            followerLinkClass: "follow-link"
+            followerLinkSelectorClass: "follow-link",
+            unFollowClass: "unfollow",
+            followClass: "follow"
         };
 
         this.getFollowerLink = function () {
-            return widget.element.parent().find("." + _self.options.followerLinkClass);
+            return widget.element.parent().find("." + _self.options.followerLinkSelectorClass);
         }
     }
 
@@ -1828,7 +1833,7 @@ window.crm = window.crm || {};
                 Title: ticket.title,
                 TypeId: ticket.ticketTypeId,
                 PriorityId: ticket.priorityId,
-                Description: $('<div/>').html(ticket.description).text(),
+                Description: $('<div/>').html(ticket.description).html(),
                 UpdateDescription: true,
                 UpdatePriority: true,
                 UpdateTypeId: true,

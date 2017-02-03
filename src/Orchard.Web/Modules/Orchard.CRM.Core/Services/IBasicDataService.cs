@@ -5,7 +5,7 @@ namespace Orchard.CRM.Core.Services
     using Orchard.CRM.Core.ViewModels;
     using Orchard.Security;
     using System.Collections.Generic;
-    
+
     public interface IBasicDataService : IDependency
     {
         IEnumerable<IUser> GetCustomers(string searchPhrase, int pageId, int pageSize, UsersOrderViewModel orderBy, bool decsending);
@@ -18,7 +18,7 @@ namespace Orchard.CRM.Core.Services
         IEnumerable<BusinessUnitMemberPartRecord> GetBusinessUnitMembers();
         IEnumerable<TeamMemberPartRecord> GetTeamMembers();
         IEnumerable<StatusRecord> GetStatusRecords();
-        IEnumerable<ServiceRecord> GetServices();
+        IEnumerable<ServicePart> GetServices();
         IEnumerable<TicketTypeRecord> GetTicketTypes();
         IEnumerable<PriorityRecord> GetPriorities();
         void ClearCache();

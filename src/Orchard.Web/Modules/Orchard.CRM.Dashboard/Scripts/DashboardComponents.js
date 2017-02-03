@@ -49,7 +49,7 @@ orchardcollaboration.react.allComponents = orchardcollaboration.react.allCompone
             });
 
             var loadData = function () {
-                var url = _self.element.data("sidebardashboardurl");
+                var url = _self.element.data("dashboardurl");
                 loadingData.removeClass("hidden");
                 $.ajax({
                     url: url,

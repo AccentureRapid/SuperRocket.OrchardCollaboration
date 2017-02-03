@@ -31,7 +31,7 @@ namespace Orchard.CRM.Core.Controllers
         // GET: EmailTemplate
         public ActionResult Index()
         {
-            if (!this.services.Authorizer.Authorize(Permissions.BasicDataPermission, T("Not authorized to list users")))
+            if (!this.services.Authorizer.Authorize(Permissions.BasicDataPermission, T("Not authorized")))
             {
                 return new HttpUnauthorizedResult();
             }

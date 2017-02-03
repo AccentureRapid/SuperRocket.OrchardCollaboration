@@ -10,6 +10,10 @@ using System.Dynamic;
 using Orchard.CRM.Project.ViewModels;
 using Orchard.ContentManagement.FieldStorage.InfosetStorage;
 using Orchard.CRM.Project.Services;
+using Orchard.ContentManagement.Handlers;
+using System.Globalization;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Orchard.CRM.Project.Drivers
 {
@@ -76,6 +80,61 @@ namespace Orchard.CRM.Project.Drivers
                        TemplateName: "Parts/ProjectDashboardEditor",
                        Model: model,
                        Prefix: Prefix));
+        }
+
+        protected override void Importing(ProjectDashboardEditorPart part, ImportContentContext context)
+        {
+            context.ImportAttribute(part.PartDefinition.Name, "PortletList", portletList =>
+            {
+                if (string.IsNullOrEmpty(portletList))
+                {
+                    return;
+                }
+
+                JArray importedData = (JArray)JsonConvert.DeserializeObject(portletList);
+                List<int> portletTemplates = new List<int>();
+
+                foreach (var item in importedData)
+                {
+                    var template = this.services
+                    .ContentManager
+                    .HqlQuery()
+                    .ForType(item["ContentType"].ToString())
+                    .Where(c => c.ContentPartRecord<TitlePartRecord>(), c => c.Eq("Title", item["Title"].ToString()))
+                    .Slice(0, 1)
+                    .FirstOrDefault();
+
+                    if (template != null)
+                    {
+                        portletTemplates.Add(template.Id);
+                    }
+                }
+
+                part.PortletList = portletTemplates.ToArray();
+            });
+        }
+
+        protected override void Exporting(ProjectDashboardEditorPart part, ExportContentContext context)
+        {
+            string portletList = string.Empty;
+
+            dynamic outputObject = new JArray();
+            if (part.PortletList != null)
+            {
+                foreach (var id in part.PortletList)
+                {
+                    var portletTemplate = services.ContentManager.Get(id);
+                    if (portletTemplate != null)
+                    {
+                        dynamic item = new JObject();
+                        item.Title = portletTemplate.As<TitlePart>().Title;
+                        item.ContentType = portletTemplate.ContentType;
+                        outputObject.Add(item);
+                    }
+                }
+            }
+
+            context.Element(part.PartDefinition.Name).SetAttributeValue("PortletList", JsonConvert.SerializeObject(outputObject));
         }
     }
 }

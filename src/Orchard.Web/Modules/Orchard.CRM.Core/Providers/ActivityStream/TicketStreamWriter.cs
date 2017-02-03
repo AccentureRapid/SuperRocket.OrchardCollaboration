@@ -76,7 +76,7 @@ namespace Orchard.CRM.Core.Providers.ActivityStream
                 changes,
                 old.Service,
                 newValue.Service,
-                (id) => this.basicDataService.GetServices().FirstOrDefault(c => c.Id == id),
+                (id) => this.basicDataService.GetServices().Select(d => d.Record).FirstOrDefault(c => c.Id == id),
                 "changed the Service to: '{0}'");
 
             // change priority

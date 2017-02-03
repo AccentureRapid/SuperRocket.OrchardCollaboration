@@ -31,7 +31,7 @@ namespace Orchard.CRM.Core.Activities
 
         public override Localization.LocalizedString Description
         {
-            get { return T("The event activity that will be fired when a new Permission will be Created"); }
+            get { return T("The event activity will be fired in case of creation of a new Permission"); }
         }
 
         public override IEnumerable<LocalizedString> GetPossibleOutcomes(WorkflowContext workflowContext, ActivityContext activityContext)

@@ -8,6 +8,7 @@ using System.Web;
 
 namespace Orchard.CRM.Core.Models
 {
+    [Obsolete]
     public class ServiceRecord : IBasicDataRecord
     {
         public virtual int Id { get; set; }

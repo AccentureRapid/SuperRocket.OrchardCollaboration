@@ -51,6 +51,17 @@ namespace Orchard.CRM.Core.Services
         public ILogger Logger { get; set; }
         public Localizer T { get; set; }
 
+        public TicketPart GetByTicketNumber(int number)
+        {
+            var contentQuery = this.services.ContentManager.HqlQuery().ForVersion(VersionOptions.Published);
+
+            Action<IAliasFactory> alias = x => x.ContentPartRecord<TicketPartRecord>();
+            Action<IHqlExpressionFactory> predicate = x => x.Eq("Identity.Id", number);
+
+            var ticket = contentQuery.Where(alias, predicate).Slice(0, 1).FirstOrDefault();
+
+            return ticket != null ? ticket.As<TicketPart>() : null;
+        }
         public int CountByIndexProvider(PostedTicketSearchViewModel searchModel)
         {
             var builder = this.CreateLuceneBuilder(searchModel);

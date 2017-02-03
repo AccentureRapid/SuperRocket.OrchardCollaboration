@@ -64,7 +64,7 @@ namespace Orchard.CRM.Project.Providers
 
             bool followed = followers.Contains(currentUserId);
 
-            Output.Write(Display.FollowerLinkView(ContentItemId: part.ContentItem.Id, Followed: followed));
+            Output.Write(Display.FollowerLinkView(ContentItemId: part.ContentItem.Id, Followed: followed, ContentType: contentItem.ContentType));
         }
 
         [Shape]

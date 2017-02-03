@@ -17,11 +17,14 @@
 }
 @{
     Style.Include("bootstrap.min.css");
+    //Style.Include("cerulean.min.css");
+    Style.Include("cosmo.min.css");
     Style.Include("orchardcollaboration.css");
+    Style.Include("crm-dashboard.css");
 
     bool useFixedNav = true;
     bool useFluidLayout = false;
-    bool useNavSearch = true;
+    bool useNavSearch = false;
     bool useStickyFooter = false;
     bool useInverseNav = false;
 
@@ -286,7 +289,7 @@
             var deviceWidth = effectiveDeviceWidth();
             if (deviceWidth <= 500) {
                 $("#layout-wrapper").css("display", "table");
-                $("#content").find(".row .col-lg-12").first().css("padding-left", "0px").css("padding-right", "0px");
+                //$("#content").find(".row .col-lg-12").first().css("padding-left", "0px").css("padding-right", "0px");
             }
         });
     })();

@@ -19,7 +19,18 @@ namespace Orchard.CRM.Core.Models
                 this.Store(c => c.MenuId, value);
             }
         }
-        
+
+        public bool RelatedItemsHaveBeenInitialized
+        {
+            get
+            {
+                return this.Retrieve(c => c.RelatedItemsHaveBeenInitialized);
+            }
+            set
+            {
+                this.Store(c => c.RelatedItemsHaveBeenInitialized, value);
+            }
+        }
         public string Title
         {
             get

@@ -46,10 +46,23 @@ namespace Orchard.CRM.Core.Handlers
 
                 if (part.Record.StatusRecord == null)
                 {
-                    statusTimes.Add(new KeyValuePair<int, DateTime>(0, DateTime.UtcNow));    
+                    statusTimes.Add(new KeyValuePair<int, DateTime>(0, DateTime.UtcNow));
+                    part.Record.ClosedDateTime = null;
                 }
                 else
                 {
+                    var statusRecords = basicDataService.GetStatusRecords();
+                    var statusRecord = statusRecords.FirstOrDefault(c => c.Id == part.Record.StatusRecord.Id);
+
+                    if (statusRecord != null && statusRecord.StatusTypeId == StatusRecord.ClosedStatus && part.Record.ClosedDateTime == null)
+                    {
+                        part.Record.ClosedDateTime = DateTime.UtcNow;
+                    }
+                    else if (statusRecord.StatusTypeId != StatusRecord.ClosedStatus)
+                    {
+                        part.Record.ClosedDateTime = null;
+                    }
+
                     // if the status doesn't change from the last update, then do noting
                     if (statusTimes.Count > 0 && statusTimes[statusTimes.Count - 1].Key == part.Record.StatusRecord.Id)
                     {

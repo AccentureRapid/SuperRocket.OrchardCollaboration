@@ -131,53 +131,53 @@ namespace Orchard.CRM.Core.Providers
                     }
                 });
 
-                // User
-                context.For(ActivityTokenProvider.UserKey, () => (UserPartRecord)context.Data[UserKey])
-                    .Token("Email", c =>
+            // User
+            context.For(ActivityTokenProvider.UserKey, () => (UserPartRecord)context.Data[UserKey])
+                .Token("Email", c =>
+                {
+                    var part = (UserPartRecord)context.Data[UserKey];
+                    if (part == null)
                     {
-                        var part = (UserPartRecord)context.Data[UserKey];
-                        if (part == null)
-                        {
-                            return string.Empty;
-                        }
-                        else
-                        {
-                            return part.Email;
-                        }
-                    })
-                    .Token("Username", c =>
+                        return string.Empty;
+                    }
+                    else
                     {
-                        var part = (UserPartRecord)context.Data[UserKey];
-                        if (part == null)
-                        {
-                            return string.Empty;
-                        }
-                        else
-                        {
-                            return part.Email;
-                        }
-                    })
-                    .Token("FullName", contextParameter =>
+                        return part.Email;
+                    }
+                })
+                .Token("Username", c =>
+                {
+                    var part = (UserPartRecord)context.Data[UserKey];
+                    if (part == null)
                     {
-                        var part = (UserPartRecord)context.Data[UserKey];
-                        if (part == null)
-                        {
-                            return string.Empty;
-                        }
+                        return string.Empty;
+                    }
+                    else
+                    {
+                        return part.Email;
+                    }
+                })
+                .Token("FullName", contextParameter =>
+                {
+                    var part = (UserPartRecord)context.Data[UserKey];
+                    if (part == null)
+                    {
+                        return string.Empty;
+                    }
 
-                        var userContentItem = contentManager.Get(part.Id);
+                    var userContentItem = contentManager.Get(part.Id);
 
                         // Sometimes the passed UserRecord is not persisted in the database or it is a faked object,
                         // so we have to check for nullability
                         if (userContentItem != null)
-                        {
-                            return CRMHelper.GetFullNameOfUser(userContentItem.As<UserPart>());
-                        }
-                        else
-                        {
-                            return part.UserName;
-                        }
-                    });
+                    {
+                        return CRMHelper.GetFullNameOfUser(userContentItem.As<UserPart>());
+                    }
+                    else
+                    {
+                        return part.UserName;
+                    }
+                });
 
             // Ticket
             this.SubstituteTicketProperties(context);
@@ -210,7 +210,23 @@ namespace Orchard.CRM.Core.Providers
         private TPart GetPart<TPart>(EvaluateContext context)
             where TPart : ContentPart
         {
-            ContentItem contentItem = (ContentItem)context.Data["Content"];
+            if (!(context.Data is IContent))
+            {
+                return null;
+
+            }
+
+            ContentItem contentItem = null;
+            if (context.Data is ContentPart)
+            {
+                ContentPart part = (ContentPart)context.Data["Content"];
+                contentItem = part.ContentItem;
+            }
+            else if (context.Data is IContent)
+            {
+                contentItem = (ContentItem)context.Data["Content"];
+            }
+
             if (contentItem == null)
             {
                 return null;
@@ -297,7 +313,7 @@ namespace Orchard.CRM.Core.Providers
                         return string.Empty;
                     }
 
-                    var records = this.basicDataService.GetServices().ToList();
+                    var records = this.basicDataService.GetServices().Select(d => d.Record).ToList();
                     return this.GetBasicDataRecordName(c.Record.Service.Id, records);
 
                 })

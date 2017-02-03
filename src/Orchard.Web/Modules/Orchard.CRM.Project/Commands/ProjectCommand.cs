@@ -409,6 +409,7 @@ namespace Orchard.CRM.Project.Commands
                 ChartType = (int)chartType,
                 GroupByCategory = groupByCategory,
                 GroupByType = groupByType,
+                Guid = Guid.NewGuid().ToString(),
                 AggregateMethod = (int)aggregateMethod
             };
 

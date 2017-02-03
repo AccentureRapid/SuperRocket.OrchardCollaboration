@@ -106,8 +106,11 @@
     <Content Include="Scripts\chosen\chosen.jquery.min.js" />
     <Content Include="Scripts\chosen\chosen.proto.js" />
     <Content Include="Scripts\chosen\chosen.proto.min.js" />
-    <Content Include="Placement.info" />
+    <Content Include="Placement.info">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="packages.config" />
+    <Content Include="App_Data\Localization\de-DE\orchard.module.po" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -221,16 +224,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
+    <Compile Include="ContentTypes.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Drivers\DataReportViewerDriver.cs" />
+    <Compile Include="Drivers\ReportDriver.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Handlers\DataReportViewerHandler.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\AggregateMethods.cs" />
     <Compile Include="Models\ChartTypes.cs" />
     <Compile Include="Models\DataReportViewerPart.cs" />
+    <Compile Include="Models\ReportPart.cs" />
     <Compile Include="Models\ReportRecord.cs" />
     <Compile Include="Models\DataReportViewerPartRecord.cs" />
+    <Compile Include="Providers\ReportResult.cs" />
     <Compile Include="Providers\AggregationResult.cs" />
     <Compile Include="Providers\DescribeGroupByContext.cs" />
     <Compile Include="Providers\DescribeGroupByParameterFor.cs" />

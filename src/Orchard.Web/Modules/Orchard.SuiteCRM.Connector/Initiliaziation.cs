@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
+using Orchard.CRM.Core.Providers.Serialization;
 using Orchard.Environment;
+using Orchard.SuiteCRM.Connector.Models;
 using Orchard.SuiteCRM.Connector.Providers.Serialization;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,7 @@ namespace Orchard.SuiteCRM.Connector
             defaultSetting.Converters = defaultSetting.Converters != null ? defaultSetting.Converters : new List<JsonConverter>();
 
             defaultSetting.Converters.Add(new SuiteCRMProjectPartConverter());
+            JsonConvertersTypes.TypesHavingJsonConverters.Add(typeof(SuiteCRMProjectPart));
 
             JsonConvert.DefaultSettings = () => defaultSetting;
         }

@@ -63,7 +63,7 @@ namespace Orchard.CRM.Core.Providers
                 {
                     var priorities = this.basicDataService.GetPriorities().ToList();
                     var statusRecords = this.basicDataService.GetStatusRecords().ToList().Select(c => new BasicDataRecordViewModel { Id = c.Id, Name = c.Name }).ToList();
-                    var serviceRecords = this.basicDataService.GetServices().ToList();
+                    var serviceRecords = this.basicDataService.GetServices().Select(c => c.Record).ToList();
                     var projects = this.projectService.GetProjects(null).AsPart<ProjectPart>().ToList();
 
                     Collection<SelectListItem> prioritySelectList = new Collection<SelectListItem>();
@@ -80,7 +80,7 @@ namespace Orchard.CRM.Core.Providers
                     Converter.Fill(serviceSelectList, null, serviceRecords);
                     serviceSelectList.Insert(0, new SelectListItem());
 
-                    Converter.Fill(projectList, projects);
+                    Converter.FillByIdentity(projectList, projects);
 
                     Collection<SelectListItem> dueDates = CRMHelper.GetDueDateItems(this.T);
 

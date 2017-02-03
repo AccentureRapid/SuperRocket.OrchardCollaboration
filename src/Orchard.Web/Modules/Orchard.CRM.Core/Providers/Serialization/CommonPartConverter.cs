@@ -25,15 +25,6 @@ namespace Orchard.CRM.Core.Providers.Serialization
             // ModifiedUtc
             Utility.WriteProperty("ModifiedUtc", contentPart.ModifiedUtc, writer, serializer);
 
-            // VersionCreatedUtc
-            Utility.WriteProperty("VersionCreatedUtc", contentPart.VersionCreatedUtc, writer, serializer);
-
-            // VersionModifiedUtc
-            Utility.WriteProperty("VersionModifiedUtc", contentPart.VersionModifiedUtc, writer, serializer);
-
-            // VersionPublishedUtc
-            Utility.WriteProperty("VersionPublishedUtc", contentPart.VersionPublishedUtc, writer, serializer);
-
             this.WriteCommonFields(writer, contentPart, serializer);
 
             writer.WriteEnd();

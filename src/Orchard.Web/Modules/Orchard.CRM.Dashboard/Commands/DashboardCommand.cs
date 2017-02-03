@@ -97,11 +97,17 @@ namespace Orchard.CRM.Dashboard.Commands
         public string Text { get; set; }
 
         [OrchardSwitch]
+        public bool NotCollapsible { get; set; }
+
+        [OrchardSwitch]
+        public bool ShowConfigurableItemsCountInHeader { get; set; }
+
+        [OrchardSwitch]
         public bool Publish { get; set; }
 
         [CommandName("dashboard create")]
-        [CommandHelp("dashboard create [/Portlets:<portlets>] /Title:<title> /Path:<path> [/Text:<text>] [/Owner:<username>] [/MenuName:<name>] [/MenuText:<menu text>] [/Homepage:true|false]")]
-        [OrchardSwitches("Portlets,Title,Owner,MenuText,Homepage,MenuName")]
+        [CommandHelp("dashboard create [/Portlets:<portlets>] /Title:<title> /Path:<path> [/Text:<text>] [/Owner:<username>] [/MenuName:<name>] [/MenuText:<menu text>] [/Homepage:true|false] [/ShowConfigurableItemsCountInHeader:<ShowConfigurableItemsCountInHeader>]")]
+        [OrchardSwitches("Portlets,Title,Owner,MenuText,Homepage,MenuName,ShowConfigurableItemsCountInHeader")]
         public void Create()
         {
             if (String.IsNullOrEmpty(Owner))
@@ -111,9 +117,9 @@ namespace Orchard.CRM.Dashboard.Commands
 
             var owner = _membershipService.GetUser(Owner);
             _authenticationService.SetAuthenticatedUserForRequest(owner);
-            
+
             var dashboard = _contentManager.Create(Consts.GenericDashboardContentType, VersionOptions.Draft);
-            dashboard.As<ICommonPart>().Owner = owner;
+            dashboard.As<CommonPart>().Owner = owner;
             dashboard.As<TitlePart>().Title = Title;
 
             if (!String.IsNullOrWhiteSpace(MenuText))
@@ -139,28 +145,49 @@ namespace Orchard.CRM.Dashboard.Commands
                     autoroutePart.CustomPattern = "/";
                 }
             }
-            
+
             var dashboardPart = dashboard.As<GenericDashboardPart>();
             dashboardPart.PortletList = Portlets;
+            dashboardPart.ShowConfigurableItemsCountInHeader = ShowConfigurableItemsCountInHeader;
             dashboardPart.CreatePortletsOnPublishing = true;
             _contentManager.Publish(dashboard);
         }
 
         [CommandName("widget-generic-dashboard create")]
-        [CommandHelp("widget-generic-dashboard create /Portlets:<portlets> /Title:<title> /Name:<name> /Zone:<zone> /WidgetPosition:<widgetposition> /Layer:<layer> [/Identity:<identity>] [/RenderTitle:true|false] [/Owner:<owner>] [/Text:<text>] [/MenuName:<name>]\r\n\t" + "Creates a new widget")]
-        [OrchardSwitches("Portlets,Title,Name,Zone,WidgetPosition,Layer,Identity,Owner,Text,MenuName,RenderTitle")]
+        [CommandHelp("widget-generic-dashboard create /Portlets:<portlets> /Title:<title> /Name:<name> /Zone:<zone> /WidgetPosition:<widgetposition> /Layer:<layer> [/Identity:<identity>] [/RenderTitle:true|false] [/Owner:<owner>] [/Text:<text>]  [/ShowConfigurableItemsCountInHeader:<ShowConfigurableItemsCountInHeader>] [/MenuName:<name>]\r\n\t" + "Creates a new widget")]
+        [OrchardSwitches("NotCollapsible,Portlets,Title,Name,Zone,WidgetPosition,Layer,Identity,Owner,Text,MenuName,RenderTitle,ShowConfigurableItemsCountInHeader")]
         public void CreateDashboardWidget()
         {
-            string type = Consts.GenericDashboardWidgetContentType;
+            string type = Consts.GenericCoverWidgetContentType;
             var widget = CreateWidget(type);
-            if(widget == null)
+            if (widget == null)
             {
                 return;
             }
 
-            var dashboardPart = widget.As<GenericDashboardPart>();
+            if (String.IsNullOrEmpty(Owner))
+            {
+                Owner = _siteService.GetSiteSettings().SuperUser;
+            }
+
+            var owner = _membershipService.GetUser(Owner);
+            _authenticationService.SetAuthenticatedUserForRequest(owner);
+
+            var dashboard = _contentManager.Create(Consts.GenericDashboardContentType, VersionOptions.Draft);
+            dashboard.As<ICommonPart>().Owner = owner;
+            dashboard.As<TitlePart>().Title = Title;
+            var dashboardPart = dashboard.As<GenericDashboardPart>();
             dashboardPart.PortletList = Portlets;
+            dashboardPart.ShowConfigurableItemsCountInHeader = ShowConfigurableItemsCountInHeader;
             dashboardPart.CreatePortletsOnPublishing = true;
+            dashboardPart.ShowCollapsedInInitializedState = true;
+            dashboardPart.Collapsiable = !NotCollapsible;
+            _contentManager.Publish(dashboard);
+
+            var coverWidgetPart = widget.As<CoverWidgetPart>();
+            coverWidgetPart.HideEditLinkInFrontendLoadSync = true;
+            coverWidgetPart.TargetContentItemId = dashboard.Id;
+            coverWidgetPart.LoadSync = true;
 
             _contentManager.Publish(widget.ContentItem);
             Context.Output.WriteLine(T("Widget created successfully.").Text);
@@ -187,13 +214,13 @@ namespace Orchard.CRM.Dashboard.Commands
                 return;
             }
 
-            var sidebarPart = widget.As<SidebarPart>();
+            var sidebarPart = widget.As<CoverWidgetPart>();
             var dashboard = _contentManager.Create(Consts.SidebarDashboardType, VersionOptions.Draft);
             dashboard.As<ICommonPart>().Owner = owner;
             SidebarDashboardPart sidebarDashboardPart = dashboard.As<SidebarDashboardPart>();
             sidebarDashboardPart.SidebarPortletList = Portlets;
             dashboard.As<TitlePart>().Title = Title;
-            
+
             _contentManager.Publish(dashboard);
 
             sidebarPart.TargetContentItemId = dashboard.Id;
@@ -202,7 +229,7 @@ namespace Orchard.CRM.Dashboard.Commands
             Context.Output.WriteLine(T("Widget created successfully.").Text);
         }
 
-         private LayerPart GetLayer(string layer)
+        private LayerPart GetLayer(string layer)
         {
             var layers = _widgetsService.GetLayers();
             return layers.FirstOrDefault(layerPart => String.Equals(layerPart.Name, layer, StringComparison.OrdinalIgnoreCase));

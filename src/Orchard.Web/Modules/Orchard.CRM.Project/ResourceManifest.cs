@@ -10,10 +10,12 @@ namespace Orchard.CRM.Project
     {
         public void BuildManifests(ResourceManifestBuilder builder)
         {
-            builder.Add().DefineScript("CRMProjectComponents").SetUrl("CRMProjectComponents.js").SetDependencies("reactjs", "reactjs_dom", "BaseComponents", "react-bootstrap");
-            builder.Add().DefineScript("ProjectWidgets").SetUrl("ProjectWidgets.js").SetDependencies("jQueryUI", "CRMProjectComponents");
-            builder.Add().DefineScript("Chosen").SetUrl("chosen/chosen.jquery.js").SetDependencies("jQuery");
-            builder.Add().DefineScript("JsTree").SetUrl("JsTree.js").SetDependencies("jQuery");
+            var manifest = builder.Add();
+            manifest.DefineScript("CRMProjectComponents").SetUrl("CRMProjectComponents.js").SetDependencies("reactjs", "reactjs_dom", "BaseComponents", "react-bootstrap");
+            manifest.DefineScript("ProjectWidgets").SetUrl("ProjectWidgets.js").SetDependencies("jQueryUI", "CRMProjectComponents");
+            manifest.DefineScript("Chosen").SetUrl("chosen/chosen.jquery.js").SetDependencies("jQuery");
+            manifest.DefineScript("JsTree").SetUrl("JsTree.js").SetDependencies("jQuery");
+            manifest.DefineStyle("JsTree").SetUrl("JsTree/style.css");
         }
     }
 }

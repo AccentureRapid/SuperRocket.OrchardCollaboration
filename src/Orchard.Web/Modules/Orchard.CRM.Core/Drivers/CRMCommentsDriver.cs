@@ -46,7 +46,7 @@ namespace Orchard.CRM.Core.Drivers
             var users = this.services.ContentManager.GetMany<IUser>(comments.Where(c => c.User != null).Select(c => c.User.Id), VersionOptions.Published, QueryHints.Empty);
             foreach (var record in comments)
             {
-                model.Comments.Add(this.Convert(record, users));
+                model.Comments.Add(Converter.Convert(services, record, users));
             }
 
             var result = new List<DriverResult>();
@@ -76,7 +76,7 @@ namespace Orchard.CRM.Core.Drivers
 
             foreach (var record in comments)
             {
-                model.Comments.Add(this.Convert(record, users));
+                model.Comments.Add(Converter.Convert(services, record, users));
             }
 
             return this.Combined(
@@ -90,28 +90,6 @@ namespace Orchard.CRM.Core.Drivers
                             Model: model,
                             Prefix: Prefix))
                         );
-        }
-
-        private CommentsViewModel.CRMCommentViewModel Convert(CRMCommentPartRecord record, IEnumerable<IUser> users)
-        {
-            var output = new CommentsViewModel.CRMCommentViewModel
-            {
-                IsEmail = record.IsEmail,
-                Subject = record.Subject,
-                BCC = record.BCC,
-                CC = record.CC,
-                CommentDateUtc = record.CommentDateUtc,
-                CommentText = record.CommentText,
-                IsHtml = record.IsHtml,
-                User = users.FirstOrDefault(c => c.Id == record.User.Id)
-            };
-
-            if (output.CommentDateUtc.HasValue && output.CommentDateUtc.Value.Kind == DateTimeKind.Utc)
-            {
-                output.CommentDateUtc = CRMHelper.SetSiteTimeZone(services, output.CommentDateUtc.Value);
-            }
-
-            return output;
         }
     }
 }

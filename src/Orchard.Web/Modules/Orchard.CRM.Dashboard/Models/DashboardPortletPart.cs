@@ -9,4 +9,8 @@ namespace Orchard.CRM.Dashboard.Models
     public class DashboardPortletPart : ContentPart
     {
     }
+
+    public class DashboardPortletTemplatePart : ContentPart
+    {
+    }
 }

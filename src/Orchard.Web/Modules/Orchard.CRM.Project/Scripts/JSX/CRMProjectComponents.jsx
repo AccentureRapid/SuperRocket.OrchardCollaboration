@@ -1,5 +1,6 @@
 
-var orchardcollaboration = orchardcollaboration || {};
+window.orchardcollaboration = window.orchardcollaboration || {};
+var orchardcollaboration = window.orchardcollaboration;
 orchardcollaboration.react = orchardcollaboration.react || {};
 orchardcollaboration.react.allComponents  = orchardcollaboration.react.allComponents  || {};
 
@@ -725,7 +726,7 @@ var AddCommentModal = React.createClass({
 
 	save: function(){
 		var data = {
-			comment: this.refs.comment.innerText,
+			comment: this.refs.comment.value,
 			id : this.props.selectedTicketId
 		};
 
@@ -754,7 +755,7 @@ var EditTicketModal = React.createClass({
 
 		var data = {
 			title: this.refs.title.value,
-			description: this.refs.description.innerHTML,
+			description: this.refs.description.value,
 			priorityId: priority.selectedIndex? priority.options[priority.selectedIndex].value: null,
 			ticketTypeId: ticketType.selectedIndex? ticketType.options[ticketType.selectedIndex].value: null,
 			id: this.props.editModalData.id

@@ -2,7 +2,7 @@
 AntiForgery: enabled
 Author: Siyamand Ayubi
 Website: http://OrchardCollaboration.com
-Version: 1.0
-Dependencies: S22.IMAP, Orchard.Email, Orchard.CRM.Core,Orchard.Autoroute,Orchard.ContentPicker, Orchard.Widgets
-Description: Contains the Dashboard ContentItem as well as common Portlets for the Dashboard
-Category: Collaboration
+Version: 2.0
+Dependencies: Orchard.Tokens, Orchard.Projections, Orchard.Reporting
+FeatureDescription: The module allows users to view the data of Orchard queries in Several new charts
+Category: Reportings

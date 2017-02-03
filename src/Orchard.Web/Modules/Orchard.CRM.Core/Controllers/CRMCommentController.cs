@@ -1,21 +1,21 @@
 namespace Orchard.CRM.Core.Controllers
 {
     using Orchard.ContentManagement;
-using Orchard.CRM.Core.Models;
-using Orchard.CRM.Core.Providers.ActivityStream;
-using Orchard.CRM.Core.Providers.ActivityStream.Descriptors;
-using Orchard.CRM.Core.Services;
-using Orchard.CRM.Core.ViewModels;
-using Orchard.DisplayManagement;
-using Orchard.DisplayManagement.Shapes;
-using Orchard.Indexing;
-using Orchard.Localization;
-using Orchard.Mvc.ViewEngines.ThemeAwareness;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Web.Mvc;
-using System.Web.Routing;
+    using Orchard.CRM.Core.Models;
+    using Orchard.CRM.Core.Providers.ActivityStream;
+    using Orchard.CRM.Core.Providers.ActivityStream.Descriptors;
+    using Orchard.CRM.Core.Services;
+    using Orchard.CRM.Core.ViewModels;
+    using Orchard.DisplayManagement;
+    using Orchard.DisplayManagement.Shapes;
+    using Orchard.Indexing;
+    using Orchard.Localization;
+    using Orchard.Mvc.ViewEngines.ThemeAwareness;
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Web.Mvc;
+    using System.Web.Routing;
 
     public class CRMCommentController : Controller, IUpdateModel
     {
@@ -92,7 +92,7 @@ using System.Web.Routing;
             routeValueDictionary.Add("controller", "Item");
             routeValueDictionary.Add("area", "Orchard.CRM.Core");
             routeValueDictionary.Add("id", contentItem.Id);
-            this.activityStreamService.WriteChangesToStreamActivity(userId, contentItem.Id, contentItem.VersionRecord.Id, new ActivityStreamChangeItem[] {}, contentDescription, routeValueDictionary);
+            this.activityStreamService.WriteChangesToStreamActivity(userId, contentItem.Id, contentItem.VersionRecord.Id, new ActivityStreamChangeItem[] { }, contentDescription, routeValueDictionary);
 
             var documentIndex = this.indexProvider.New(contentItem.Id);
             this.contentManager.Index(contentItem, documentIndex);
@@ -102,7 +102,7 @@ using System.Web.Routing;
 
             if (isAjaxRequest)
             {
-                return this.Json(this.CreateAjaxMessageModel(contentItem, string.Empty), JsonRequestBehavior.AllowGet);
+                return this.Json(this.CreateAjaxMessageModel(crmCommentItem, string.Empty), JsonRequestBehavior.AllowGet);
             }
             else if (!string.IsNullOrEmpty(returnUrl))
             {

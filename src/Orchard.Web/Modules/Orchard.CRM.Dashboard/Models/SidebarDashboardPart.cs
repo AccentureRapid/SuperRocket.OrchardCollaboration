@@ -7,7 +7,7 @@ using Orchard.Core.Containers.Models;
 
 namespace Orchard.CRM.Dashboard.Models
 {
-    public class SidebarDashboardPart : ContentPart<ContainerPartRecord>
+    public class SidebarDashboardPart : ContentPart
     {
         /// <summary>
         /// Comma-seperated list of the Portlet titles for the given dashboard

@@ -33,7 +33,7 @@ namespace Orchard.CRM.Core.Providers
             ITokenizer tokenizer)
         {
             this.crmContentOwnershipService = crmContentOwnershipService;
-            this.basicDataService= basicDataService;
+            this.basicDataService = basicDataService;
             this.tokenizer = tokenizer;
             this.tagBuilderFactory = tagBuilderFactory;
             this.T = NullLocalizer.Instance;
@@ -75,7 +75,7 @@ namespace Orchard.CRM.Core.Providers
         [Shape]
         public void TicketServicesOptions(dynamic Shape, dynamic Display, TextWriter Output, UrlHelper Url, int contentItemId)
         {
-            var items = this.basicDataService.GetServices().OrderBy(c => c.Name).ToList();
+            var items = this.basicDataService.GetServices().OrderBy(c => c.Name).Select(c => c.Record).ToList();
             this.RenderDropDownMenuList(Shape, Display, Output, Url, items, "ServiceId", "UpdateServiceId", contentItemId);
         }
 
@@ -145,7 +145,7 @@ namespace Orchard.CRM.Core.Providers
             Output.WriteLine(li.ToString(TagRenderMode.EndTag));
         }
 
-        private void RenderDropDownMenuList(dynamic Shape, dynamic Display, TextWriter Output, UrlHelper Url, IEnumerable<SelectListItem> items, string fieldName, string updateFieldName, int contentItemId, Action<dynamic,SelectListItem> customizeTag)
+        private void RenderDropDownMenuList(dynamic Shape, dynamic Display, TextWriter Output, UrlHelper Url, IEnumerable<SelectListItem> items, string fieldName, string updateFieldName, int contentItemId, Action<dynamic, SelectListItem> customizeTag)
         {
             var ul = this.tagBuilderFactory.Create(Shape, "ul");
 
@@ -189,13 +189,13 @@ namespace Orchard.CRM.Core.Providers
         private void RenderDropDownMenuList(dynamic Shape, dynamic Display, TextWriter Output, UrlHelper Url, IEnumerable<IBasicDataRecord> items, string fieldName, string updateFieldName, int contentItemId)
         {
             this.RenderDropDownMenuList(
-                Shape, 
-                Display, 
-                Output, 
-                Url, 
-                items.Select(c => new SelectListItem { Value = c.Id.ToString(CultureInfo.InvariantCulture), Text = c.Name }), 
-                fieldName, 
-                updateFieldName, 
+                Shape,
+                Display,
+                Output,
+                Url,
+                items.Select(c => new SelectListItem { Value = c.Id.ToString(CultureInfo.InvariantCulture), Text = c.Name }),
+                fieldName,
+                updateFieldName,
                 contentItemId,
                 null);
         }

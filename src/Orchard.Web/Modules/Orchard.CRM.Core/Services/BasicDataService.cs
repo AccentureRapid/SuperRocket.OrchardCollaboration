@@ -18,7 +18,6 @@ namespace Orchard.CRM.Core.Services
     {
         private readonly static Object ourLock = new Object();
 
-        private readonly IRepository<ServiceRecord> servicePartRecordRepository;
         private readonly IRepository<TicketTypeRecord> ticketTypeRecordRepository;
         private readonly IRepository<RolesPermissionsRecord> rolesPermissionsRepository;
         private readonly ICacheManager chacheManager;
@@ -57,8 +56,7 @@ namespace Orchard.CRM.Core.Services
             IRepository<TicketTypeRecord> ticketTypeRecordRepository,
             IRepository<TeamMemberPartRecord> teamMemberRepository,
             IRepository<UserRolesPartRecord> userRolesRepository,
-            IRepository<RolesPermissionsRecord> rolesPermissionsRepository,
-            IRepository<ServiceRecord> servicePartRecordRepository)
+            IRepository<RolesPermissionsRecord> rolesPermissionsRepository)
         {
             this.fieldRepository = fieldRepository;
             this.userRepository = userRepository;
@@ -70,7 +68,6 @@ namespace Orchard.CRM.Core.Services
             this.chacheManager = chacheManager;
             this.priorityRecordRepository = priorityRecordRepository;
             this.ticketTypeRecordRepository = ticketTypeRecordRepository;
-            this.servicePartRecordRepository = servicePartRecordRepository;
             this.businessUnitMemberRepository = businessUnitMemberRepository;
             this.contentManager = contentManager;
         }
@@ -405,12 +402,12 @@ namespace Orchard.CRM.Core.Services
             });
         }
 
-        public IEnumerable<ServiceRecord> GetServices()
+        public IEnumerable<ServicePart> GetServices()
         {
             return this.chacheManager.Get("TicketServices", context =>
             {
                 context.Monitor(new SimpleBooleanToken(() => !RefreshServices));
-                var returnValue = this.servicePartRecordRepository.Table.Where(c => c.Deleted == false).ToList();
+                var returnValue = this.contentManager.HqlQuery<ServicePart>().List();
 
                 lock (ourLock)
                 {

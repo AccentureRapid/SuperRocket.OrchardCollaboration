@@ -284,7 +284,7 @@ namespace Orchard.CRM.Core.Services
 
         public dynamic CreateModel(List<ActivityStreamRecord> items, int count, int page, int pageSize)
         {
-            var session = this.transactionManager.GetSession(); 
+            var session = this.transactionManager.GetSession();
 
             // set time zone
             items.ForEach(c =>
@@ -310,7 +310,7 @@ namespace Orchard.CRM.Core.Services
                 dynamic dayModel = new ExpandoObject();
                 dayModels.Add(dayModel);
                 dayModel.Date = group.Key;
-                dayModel.Title = group.Key.Date == today.Date ? T("Today").Text : group.Key.ToLongDateString();
+                dayModel.Title = group.Key.Date == today.Date ? T("Today").Text : group.Key.ToString("dddd, MMMM, dd, yyyy", services.WorkContext.CurrentCultureInfo());
 
                 List<dynamic> itemModels = new List<dynamic>();
                 dayModel.Items = itemModels;

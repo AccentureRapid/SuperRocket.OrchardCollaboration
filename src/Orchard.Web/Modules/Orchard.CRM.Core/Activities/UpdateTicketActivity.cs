@@ -118,7 +118,7 @@ namespace Orchard.CRM.Core.Activities
                 int? serviceId = getValue(UpdateTicketActivityForm.ServiceId);
                 if (serviceId.HasValue)
                 {
-                    ticketPart.Record.Service = new ServiceRecord { Id = serviceId.Value };
+                    ticketPart.Record.Service = new ServicePartRecord { Id = serviceId.Value };
                 }
                 else
                 {

@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace Orchard.CRM.Core.Providers.Filters
 {
-    public abstract class TicketStatusTypeFilterForm : IFormProvider
+    public class TicketStatusTypeFilterForm : IFormProvider
     {
         protected dynamic Shape { get; set; }
         public Localizer T { get; set; }

@@ -18,6 +18,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using Orchard.ContentManagement.Handlers;
 
 namespace Orchard.CRM.Project.Drivers
 {
@@ -198,6 +199,28 @@ namespace Orchard.CRM.Project.Drivers
                       TemplateName: "Parts/Project",
                       Model: part,
                       Prefix: Prefix));
+        }
+
+        protected override void Exporting(ProjectPart part, ExportContentContext context)
+        {
+            var projectElement = context.Element(part.PartDefinition.Name);
+
+            projectElement.SetAttributeValue("Title", part.Title);
+            projectElement.SetAttributeValue("Description", part.Description);
+        }
+
+        protected override void Importing(ProjectPart part, ImportContentContext context)
+        {
+            // Don't do anything if the tag is not specified.
+            if (context.Data.Element(part.PartDefinition.Name) == null)
+            {
+                return;
+            }
+
+            context.ImportAttribute(part.PartDefinition.Name, "Title", title => part.Title = title);
+
+            context.ImportAttribute(part.PartDefinition.Name, "Description", description =>
+            part.Description = description);
         }
 
         private DateTime SetSiteTimeZone(DateTime dateTime)

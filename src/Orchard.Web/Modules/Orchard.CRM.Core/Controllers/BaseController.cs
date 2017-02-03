@@ -18,6 +18,7 @@ using Orchard.Indexing;
 using Orchard.CRM.Core.Providers.ActivityStream;
 using Orchard.CRM.Core.Providers.ActivityStream.Descriptors;
 using Newtonsoft.Json;
+using Orchard.Core.Common.Models;
 
 namespace Orchard.CRM.Core.Controllers
 {
@@ -88,7 +89,8 @@ namespace Orchard.CRM.Core.Controllers
             if (contentItem == null)
                 return HttpNotFound();
 
-            if (!this.IsDisplayAuthorized())
+            if (contentItem.As<ContentItemPermissionPart>() != null &&
+                    !this.IsDisplayAuthorized())
             {
                 return new HttpUnauthorizedResult();
             }
@@ -263,9 +265,6 @@ namespace Orchard.CRM.Core.Controllers
 
         public virtual ActionResult Remove(int[] ids, string returnUrl)
         {
-            if (!this.services.Authorizer.Authorize(Permissions.AdvancedOperatorPermission))
-                return new HttpUnauthorizedResult();
-
             ContentItem firstContentItem = null;
 
             if (ids == null || ids.Length == 0)
@@ -281,6 +280,16 @@ namespace Orchard.CRM.Core.Controllers
 
                     if (contentItem != null)
                     {
+                        if (!this.crmContentOwnershipService.CurrentUserCanEditContent(contentItem))
+                        {
+                            return new HttpUnauthorizedResult();
+                        }
+
+                        var commonPart = contentItem.As<CommonPart>();
+                        bool isOwner = commonPart.Owner != null && commonPart.Owner.Id == this.services.WorkContext.CurrentUser.Id;
+                        if (!this.services.Authorizer.Authorize(Permissions.AdvancedOperatorPermission) && !isOwner)
+                            return new HttpUnauthorizedResult();
+
                         if (firstContentItem == null)
                         {
                             firstContentItem = contentItem;

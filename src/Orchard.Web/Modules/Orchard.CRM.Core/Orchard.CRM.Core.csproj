@@ -134,6 +134,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\TicketController.cs" />
     <Compile Include="Drivers\AttachToProjectDriver.cs" />
+    <Compile Include="Drivers\ServiceDriver.cs" />
     <Compile Include="Drivers\ContentItemPermissionDriver.cs" />
     <Compile Include="Drivers\CRMCommentDriver.cs" />
     <Compile Include="Drivers\CRMCommentsDriver.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Drivers\TicketsForContentItemDriver.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Handlers\AttachToProjectHandler.cs" />
+    <Compile Include="Handlers\ServiceHandler.cs" />
     <Compile Include="Handlers\ContentItemPermissionHandler.cs" />
     <Compile Include="Handlers\CRMCommentHandler.cs" />
     <Compile Include="Handlers\CRMCommentsHandler.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Models\FileUpoadViewModel.cs" />
     <Compile Include="Models\ProjectPart.cs" />
     <Compile Include="Models\ProjectPartRecord.cs" />
+    <Compile Include="Models\ServicePartRecord.cs" />
     <Compile Include="Models\TicketMenuItemPart.cs" />
     <Compile Include="Models\TicketMenuItemPartRecord.cs" />
     <Compile Include="Models\TicketSettingPart.cs" />
@@ -207,11 +210,13 @@
     <Compile Include="Providers\Serialization\ContentTypePartDefinitionConverter.cs" />
     <Compile Include="Providers\Serialization\ExpandoObjectConverter.cs" />
     <Compile Include="Providers\Serialization\LayoutRecordConverter.cs" />
+    <Compile Include="Providers\Serialization\ShapeMetadataConverter.cs" />
     <Compile Include="Providers\Serialization\ShapeConverter.cs" />
     <Compile Include="Providers\Serialization\ProjectPartConverter.cs" />
     <Compile Include="Providers\Serialization\TicketPartConverter.cs" />
     <Compile Include="Providers\Serialization\ProjectionConverter.cs" />
     <Compile Include="Providers\Serialization\TitlePartConverter.cs" />
+    <Compile Include="Providers\Serialization\JsonConvertersTypes.cs" />
     <Compile Include="Providers\Serialization\Utility.cs" />
     <Compile Include="Providers\TicketGroupByParameterProvider.cs" />
     <Compile Include="Providers\UserServiceUserForm.cs" />
@@ -284,6 +289,7 @@
     <Content Include="Scripts\react-bootstrap.js" />
     <Content Include="Scripts\react-dom-0.14.3.js" />
     <Content Include="Scripts\react-dom-0.14.3.min.js" />
+    <Content Include="Scripts\spin.js" />
     <Content Include="Scripts\tinymce\orchard-tinymce.js" />
     <Content Include="Styles\Images\sprite-file-icons_64.png" />
     <Content Include="Styles\Images\ui-icons_222222_256x240.png" />
@@ -315,6 +321,7 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="App_Data\Localization\de-DE\orchard.module.po" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-filetype.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -387,6 +394,11 @@
     <Content Include="Views\Parts.FilesList.Header.cshtml" />
     <Content Include="Views\Parts.Title-Dashboard.cshtml" />
     <Content Include="Views\Content-Ticket.TitleOnly.cshtml" />
+    <Content Include="Views\Parts\Service.cshtml" />
+    <Content Include="Views\EditorTemplates\Parts\CustomerTicket.cshtml" />
+    <Content Include="Views\BasicData\Error.cshtml" />
+    <Content Include="Views\DefinitionTemplates\TicketsForContentItemPartSettings.cshtml" />
+    <Content Include="Views\DisplayAjax.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Orchard\Orchard.Framework.csproj">

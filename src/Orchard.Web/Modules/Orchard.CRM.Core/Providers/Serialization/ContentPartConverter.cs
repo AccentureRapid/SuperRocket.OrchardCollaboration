@@ -49,7 +49,12 @@ namespace Orchard.CRM.Core.Providers.Serialization
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(ContentPart);
+            if (JsonConvertersTypes.TypesHavingJsonConverters.Any(c => c == objectType))
+            {
+                return false;
+            }
+
+            return objectType.IsSubclassOf(typeof(ContentPart));
         }
     }
 }

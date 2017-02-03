@@ -137,12 +137,7 @@ namespace Orchard.CRM.Dashboard.Services
             return null;
         }
 
-        public QueryPart CreateQuery(string title, string contentType, string shapeName, string layoutName, bool createDefaultSortCriteria, bool filterToItemsVisibleByCurrentUser)
-        {
-            return CreateQuery(title, contentType, shapeName, layoutName, "Summary", createDefaultSortCriteria, filterToItemsVisibleByCurrentUser);
-        }
-
-        public QueryPart CreateQuery(string title, string contentType, string shapeName, string layoutName, string itemDisplayType, bool createDefaultSortCriteria, bool filterToItemsVisibleByCurrentUser)
+        public QueryPart CreateQuery(string title, string contentType)
         {
             var queryPart = this.GetQuery(title);
 
@@ -160,8 +155,22 @@ namespace Orchard.CRM.Dashboard.Services
             // ticket ContentType filter
             this.CreateContentTypeFilter(contentType, filterGroup);
 
+            return queryPart;
+        }
+
+        public QueryPart CreateQuery(string title, string contentType, string shapeName, string layoutName, bool createDefaultSortCriteria, bool filterToItemsVisibleByCurrentUser)
+        {
+            return CreateQuery(title, contentType, shapeName, layoutName, "Summary", createDefaultSortCriteria, filterToItemsVisibleByCurrentUser);
+        }
+
+        public QueryPart CreateQuery(string title, string contentType, string shapeName, string layoutName, string itemDisplayType, bool createDefaultSortCriteria, bool filterToItemsVisibleByCurrentUser)
+        {
+            var queryPart = this.CreateQuery(title, contentType);
+            var filterGroup = queryPart.Record.FilterGroups.FirstOrDefault();
+
             // All items visible by current user
-            if (filterToItemsVisibleByCurrentUser) {
+            if (filterToItemsVisibleByCurrentUser)
+            {
                 string state = string.Empty;
                 this.CreateFilter(ContentItemPermissionFilter.CategoryName, ContentItemPermissionFilter.CurrentUserPermissions, state, filterGroup);
             }
@@ -178,6 +187,13 @@ namespace Orchard.CRM.Dashboard.Services
                 itemDisplayType,
                 shapeName);
 
+            AddLayout(layoutState, itemDisplayType, queryPart);
+
+            return queryPart;
+        }
+
+        public LayoutRecord AddLayout(string layoutState, string itemDisplayType, QueryPart queryPart)
+        {
             // create layout
             LayoutRecord layout = new LayoutRecord
             {
@@ -193,7 +209,7 @@ namespace Orchard.CRM.Dashboard.Services
             this.layoutRepository.Flush();
             this.filterRepository.Flush();
 
-            return queryPart;
+            return layout;
         }
     }
 }

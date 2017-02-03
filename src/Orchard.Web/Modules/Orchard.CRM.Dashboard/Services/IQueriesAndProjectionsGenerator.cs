@@ -11,7 +11,9 @@ namespace Orchard.CRM.Dashboard.Services
         ContentItem CreateProjection(string contentType, string queryName, string title, string itemContentType, int maxItems);
         QueryPart CreateQuery(string title, string contentType, string shapeName, string layoutName, bool createDefaultSortCriteria, bool filterToItemsVisibleByCurrentUser);
         QueryPart CreateQuery(string title, string contentType, string shapeName, string layoutName, string itemDisplayType, bool createDefaultSortCriteria, bool filterToItemsVisibleByCurrentUser);
+        QueryPart CreateQuery(string title, string contentType);
         SortCriterionRecord CreateSortRecord(string category, string type, string state, QueryPartRecord queryPartRecord);
         QueryPart GetQuery(string title);
+        LayoutRecord AddLayout(string layoutState, string itemDisplayType, QueryPart queryPart);
     }
 }

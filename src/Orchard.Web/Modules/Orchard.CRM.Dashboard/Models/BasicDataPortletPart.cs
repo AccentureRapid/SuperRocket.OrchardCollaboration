@@ -25,4 +25,14 @@ namespace Orchard.CRM.Dashboard.Models
     public class ContentManagementPortletPart : ContentPart
     {
     }
+
+    public class DashboardManagementPart : ContentPart
+    {
+        public int DashboardListContentId
+        {
+            get { return this.Retrieve(x => x.DashboardListContentId); }
+            set { this.Store(x => x.DashboardListContentId, value); }
+        }
+
+    }
 }

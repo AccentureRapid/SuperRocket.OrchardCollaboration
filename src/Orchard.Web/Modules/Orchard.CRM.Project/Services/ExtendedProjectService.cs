@@ -62,8 +62,8 @@ namespace Orchard.CRM.Project.Services
             return this.services
                 .ContentManager
                 .Query()
-                .ForType(new[] { 
-                    ContentTypes.ProjectDashboardProjectionPortletTemplateContentType, 
+                .ForType(new[] {
+                    ContentTypes.ProjectDashboardProjectionPortletTemplateContentType,
                     ContentTypes.ProjectDashboardReportViewerPortletTemplateContentType,
                     ContentTypes.ProjectLastActivityStreamTemplateContentType})
                 .List();
@@ -163,6 +163,14 @@ namespace Orchard.CRM.Project.Services
 
         public ContentItem CreateProjectMenu(ProjectPart project)
         {
+            var editUrl = this.urlHelper.Action("Edit", "Project", new { id = project.Id, area = "Orchard.CRM.Project" });
+
+            // if editUrl is null, it means the routes are not existed yet, so all menu items will br crap, then the creation of the menu must be postponed to the first load of the project
+            if (string.IsNullOrEmpty(editUrl))
+            {
+                return null;
+            }
+
             // create menu
             var menu = this.menuService.Create(string.Format("Project-{0} --'{1}'", project.Id.ToString(CultureInfo.InvariantCulture), project.Record.Title));
             project.MenuId = menu.Id;
@@ -202,9 +210,9 @@ namespace Orchard.CRM.Project.Services
 
             var targetContentItems = contentManger.HqlQuery().ForType(new[]
             {
-                ContentTypes.ProjectWikiContentType, 
-                ContentTypes.ProjectTicketsContentType, 
-                ContentTypes.ProjectDiscussionsContentType, 
+                ContentTypes.ProjectWikiContentType,
+                ContentTypes.ProjectTicketsContentType,
+                ContentTypes.ProjectDiscussionsContentType,
                 ContentTypes.ProjectActivityStreamType,
                 ContentTypes.ProjectProjectionContentType
             }).Where(c => c.ContentPartRecord<AttachToProjectPartRecord>(), d => d.Eq("Project.Id", project.Id)).List();
@@ -262,7 +270,7 @@ namespace Orchard.CRM.Project.Services
 
 
             // edit project
-            var editUrl = this.urlHelper.Action("Edit", "Project", new { id = project.Id, area = "Orchard.CRM.Project" });
+            editUrl = this.urlHelper.Action("Edit", "Project", new { id = project.Id, area = "Orchard.CRM.Project" });
             createMenu(editUrl, T("Edit"));
 
             // Project People
@@ -328,17 +336,28 @@ namespace Orchard.CRM.Project.Services
         public void CreateMilestoneAndBacklogForProject(ProjectPart project)
         {
             var contentManager = this.services.ContentManager;
-            
+
             // create project milestones
             this.CreateProjectionForProjectAttachableItems(project, ContentTypes.ProjectProjectionContentType, QueryNames.ProjectMilestonesQueryName, "Milestones", ContentTypes.MilestoneContentType);
 
-            // create project back-log
-            var backLogContentItem = this.CreateAttachableItemToProject(project, ContentTypes.MilestoneContentType);
-            MilestonePart milestone = backLogContentItem.As<MilestonePart>();
-            milestone.IsBacklog = true;
-            TitlePart milestoneTitlePart = backLogContentItem.As<TitlePart>();
-            milestoneTitlePart.Title = T("Backlog").Text;
-            contentManager.Publish(backLogContentItem);
+
+            var backLogItem = contentManager
+               .HqlQuery()
+               .ForType(ContentTypes.MilestoneContentType)
+               .Where(c => c.ContentPartRecord<AttachToProjectPartRecord>(), d => d.Eq("Project.Id", project.Id))
+               .List()
+               .FirstOrDefault(c => c.As<MilestonePart>().IsBacklog);
+
+            if (backLogItem == null)
+            {
+                // create project back-log
+                var backLogContentItem = this.CreateAttachableItemToProject(project, ContentTypes.MilestoneContentType);
+                MilestonePart milestone = backLogContentItem.As<MilestonePart>();
+                milestone.IsBacklog = true;
+                TitlePart milestoneTitlePart = backLogContentItem.As<TitlePart>();
+                milestoneTitlePart.Title = T("Backlog").Text;
+                contentManager.Publish(backLogContentItem);
+            }
         }
 
         public void CreateProjectDependencies(ProjectPart project)

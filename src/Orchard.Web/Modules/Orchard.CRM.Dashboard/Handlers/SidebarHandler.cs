@@ -8,7 +8,7 @@ namespace Orchard.CRM.Dashboard.Handlers
     {
         public SidebarHandler(IContentManager contentManager)
         {
-            OnPublished<SidebarPart>((context, part) =>
+            OnPublished<CoverWidgetPart>((context, part) =>
             {
                 if (part.TargetContentItemId != default(int)) {
                     return;

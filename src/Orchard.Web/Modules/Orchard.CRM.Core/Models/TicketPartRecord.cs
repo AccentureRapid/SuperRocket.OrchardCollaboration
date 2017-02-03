@@ -20,20 +20,22 @@ namespace Orchard.CRM.Core.Models
 
         public virtual StatusRecord StatusRecord { get; set; }
 
-        public DateTime? DueDate { get; set; }
-        public ContentItemRecord RelatedContentItem { get; set; }
+        public virtual DateTime? DueDate { get; set; }
+        public virtual ContentItemRecord RelatedContentItem { get; set; }
 
         [Aggregate]
         public virtual TicketPartRecord Parent { get; set; }
 
         public virtual UserPartRecord RequestingUser { get; set; }
 
-        public virtual ServiceRecord Service { get; set; }
+        public virtual ServicePartRecord Service { get; set; }
 
         public virtual int SourceId { get; set; }
         public virtual string SourceData { get; set; }
 
         public virtual TicketTypeRecord TicketType { get; set; }
+
+        public virtual DateTime? ClosedDateTime { get; set; }
 
         [CascadeAllDeleteOrphan, Aggregate]
         [XmlArray("SubTickets")]

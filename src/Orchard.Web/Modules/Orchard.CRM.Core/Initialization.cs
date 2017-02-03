@@ -1,6 +1,10 @@
 using Newtonsoft.Json;
+using Orchard.Core.Common.Models;
+using Orchard.Core.Title.Models;
+using Orchard.CRM.Core.Models;
 using Orchard.CRM.Core.Providers.Serialization;
 using Orchard.Environment;
+using Orchard.Projections.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +32,13 @@ namespace Orchard.CRM.Core
             defaultSetting.Converters.Add(new ContentTypePartDefinitionConverter());
             defaultSetting.Converters.Add(new ExpandoObjectConverter());
             defaultSetting.Converters.Add(new LayoutRecordConverter());
+            defaultSetting.Converters.Add(new ShapeMetadataConverter());
+
+            JsonConvertersTypes.TypesHavingJsonConverters.Add(typeof(TitlePart));
+            JsonConvertersTypes.TypesHavingJsonConverters.Add(typeof(CommonPart));
+            JsonConvertersTypes.TypesHavingJsonConverters.Add(typeof(TicketPart));
+            JsonConvertersTypes.TypesHavingJsonConverters.Add(typeof(ProjectPart));
+            JsonConvertersTypes.TypesHavingJsonConverters.Add(typeof(ProjectionPart));
 
             JsonConvert.DefaultSettings = () => defaultSetting;
         }

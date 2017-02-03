@@ -155,6 +155,10 @@
       <Project>{5531E894-D259-45A3-AA61-26DBE720C1CE}</Project>
       <Name>Orchard.Projections</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.Reporting\Orchard.Reporting.csproj">
+      <Project>{7325984D-D6AC-4491-BC4E-F9C32B92C87C}</Project>
+      <Name>Orchard.Reporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Orchard.Widgets\Orchard.Widgets.csproj">
       <Project>{194D3CCC-1153-474D-8176-FDE8D7D0D0BD}</Project>
       <Name>Orchard.Widgets</Name>
@@ -168,11 +172,13 @@
     <Compile Include="Commands\DashboardCommand.cs" />
     <Compile Include="Commands\QueriesAndProjectionsCommand.cs" />
     <Compile Include="Consts.cs" />
+    <Compile Include="Controllers\AdminSettingsController.cs" />
     <Compile Include="Drivers\BaseGenericDashboardDriver.cs" />
+    <Compile Include="Drivers\DashboardManagementDriver.cs" />
     <Compile Include="Drivers\SidebarDashboardDriver.cs" />
     <Compile Include="Drivers\GenericDashboardDriver.cs" />
     <Compile Include="Drivers\BasicDataPortletDriver.cs" />
-    <Compile Include="Drivers\SidebarDriver.cs" />
+    <Compile Include="Drivers\CoverWidgetDriver.cs" />
     <Compile Include="Drivers\SmtpEmailDriver.cs" />
     <Compile Include="Drivers\ImapEmailDriver.cs" />
     <Compile Include="Handlers\SidebarDashboardHandler.cs" />
@@ -183,18 +189,19 @@
     <Compile Include="Models\SidebarDashboardPart.cs" />
     <Compile Include="Models\GenericDashboardPart.cs" />
     <Compile Include="Models\DashboardPortletPart.cs" />
-    <Compile Include="Models\SidebarPart.cs" />
+    <Compile Include="Models\CoverWidgetPart.cs" />
     <Compile Include="Models\SmtpEmailPortletPart.cs" />
     <Compile Include="Models\IMapEmailPortletPart.cs" />
     <Compile Include="ProjectionNames.cs" />
     <Compile Include="QueryNames.cs" />
     <Compile Include="ResourceManifest.cs" />
+    <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\IQueriesAndProjectionsGenerator.cs" />
     <Compile Include="Services\QueriesAndProjectionsGenerator.cs" />
     <Compile Include="ViewModels\EditDashboardViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Content Include="App_Data\Localization\de-DE\orchard.module.po" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Parts.IMapEmailPortlet.Summary.cshtml" />
@@ -220,13 +227,13 @@
     <Content Include="Styles\Style.less" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Widget-GenericDashboardWidget.cshtml" />
+    <Content Include="Views\Widget-GenericCoverWidget.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Parts.Title-GenericDashboardWidget.cshtml" />
+    <Content Include="Views\Parts.Title-GenericDashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Parts.Sidebar.cshtml" />
+    <Content Include="Views\Parts.CoverWidget.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Widget-SidebarWidget.cshtml" />
@@ -272,6 +279,39 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Parts.BasicDataPortletPart.Summary.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EditorTemplates\Parts\GenericDashboard.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.CoverWidget.EditLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.CoverWidget-GenericCoverWidget.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content-GenericDashboard.Detail.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\DashboardList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.DashboardManagement.Summary.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\DashboardStylesheets.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.GenericDashboard.Header.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content.Edit-GenericDashboard.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSettings\Culture.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AdminSettings\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -13,7 +13,7 @@ using Orchard.CRM.Core.Services;
 
 namespace Orchard.CRM.Core.Activities
 {
-    public class ServiceBranchActivity : BasicDataBranchActivity<ServiceRecord>
+    public class ServiceBranchActivity : BasicDataBranchActivity<ServicePartRecord>
     {
         public override string ActivityName { get { return "ServiceBranch"; } }
         public override string UnknownValue { get { return "UnknownService"; } }
@@ -28,7 +28,7 @@ namespace Orchard.CRM.Core.Activities
             this.basicDataService = basicDataService;
         }
 
-        protected override ServiceRecord GetFromTicket(TicketPart ticketPart)
+        protected override ServicePartRecord GetFromTicket(TicketPart ticketPart)
         {
             var record = ticketPart.Record.Service;
             if (record == null)
@@ -37,14 +37,14 @@ namespace Orchard.CRM.Core.Activities
             }
             else
             {
-                var records = this.basicDataService.GetServices().ToList();
+                var records = this.basicDataService.GetServices().ToList().Select(c => c.Record);
                 return records.FirstOrDefault(c => c.Id == record.Id);
             }
         }
 
-        protected override IEnumerable<ServiceRecord> GetData()
+        protected override IEnumerable<ServicePartRecord> GetData()
         {
-            return this.basicDataService.GetServices();
+            return this.basicDataService.GetServices().Select(c => c.Record);
         }
     }
 }

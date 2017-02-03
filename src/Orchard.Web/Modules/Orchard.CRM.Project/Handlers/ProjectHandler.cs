@@ -59,10 +59,15 @@ namespace Orchard.CRM.Project.Handlers
 
             OnLoaded<ProjectPart>((context, projectPart) =>
             {
+                if (projectPart.RelatedItemsHaveBeenInitialized == false)
+                {
+                    projectService.CreateMilestoneAndBacklogForProject(projectPart);
+                    projectPart.RelatedItemsHaveBeenInitialized = true;
+                }
+
                 // if the project doesn't have a menu, create a new one for it.
                 if (projectPart.MenuId == default(int))
                 {
-                    projectService.CreateMilestoneAndBacklogForProject(projectPart);
                     projectService.CreateProjectMenu(projectPart);
                 }
             });

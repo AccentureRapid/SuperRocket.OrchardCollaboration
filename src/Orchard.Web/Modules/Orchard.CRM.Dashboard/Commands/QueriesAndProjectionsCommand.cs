@@ -77,6 +77,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void CreateOpenTicketsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.MyOpenTickets) != null)
+            {
+                return;
+            }
+
             var query = _queriesAndProjectionsGenerator.CreateQuery(QueryNames.MyOpenTickets, "Ticket", "SidebarTickets", "Shape", "TitleOnly", true, false);
 
             string state = string.Format(CultureInfo.InvariantCulture, "<Form><Description></Description><NotEqual>true</NotEqual><StatusType_Id>{0}</StatusType_Id></Form>", StatusRecord.ClosedStatus);
@@ -86,11 +91,16 @@ namespace Orchard.CRM.Dashboard.Commands
             state = string.Format(CultureInfo.InvariantCulture, "<Form><Description></Description><AccessType>{0}</AccessType><Users>{1}</Users></Form>", ContentItemPermissionAccessTypes.Assignee, "{LoggedOnUser.Id}");
             _queriesAndProjectionsGenerator.CreateFilter(ContentItemPermissionFilter.CategoryName, ContentItemPermissionFilter.CurrentUserPermissions, state, query.Record.FilterGroups.First());
 
-            _queriesAndProjectionsGenerator.CreateProjection(Consts.SidebarProjectionPortletTemplateType, QueryNames.MyOpenTickets, T(ProjectionNames.MyOpenTicketsProjectionTitle).Text, "Ticket", ItemsPerSidebarPortlet);            
+            _queriesAndProjectionsGenerator.CreateProjection(Consts.SidebarProjectionPortletTemplateType, QueryNames.MyOpenTickets, T(ProjectionNames.MyOpenTicketsProjectionTitle).Text, "Ticket", ItemsPerSidebarPortlet);
         }
 
         private void CreateReportedByMeTicketsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.ReportedByMeTickets) != null)
+            {
+                return;
+            }
+
             var query = _queriesAndProjectionsGenerator.CreateQuery(QueryNames.ReportedByMeTickets, "Ticket", "SidebarTickets", "Shape", "TitleOnly", true, false);
 
             string state = string.Format(CultureInfo.InvariantCulture, "<Form><Description></Description><RequestingUser_Id>{0}</RequestingUser_Id></Form>", "{LoggedOnUser.Id}");
@@ -101,6 +111,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void CreateUnassignedTicketsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.UnassignedTickets) != null)
+            {
+                return;
+            }
+
             var query = _queriesAndProjectionsGenerator.CreateQuery(QueryNames.UnassignedTickets, "Ticket", "SidebarTickets", "Shape", "TitleOnly", true, false);
 
             // assigned to current user
@@ -112,6 +127,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void ClosedRecentlyTicketsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.ClosedRecentlyTickets) != null)
+            {
+                return;
+            }
+
             var query = _queriesAndProjectionsGenerator.CreateQuery(QueryNames.ClosedRecentlyTickets, "Ticket", "SidebarTickets", "Shape", "TitleOnly", true, true);
 
             string state = string.Format(CultureInfo.InvariantCulture, "<Form><Description></Description><NotEqual>false</NotEqual><StatusType_Id>{0}</StatusType_Id></Form>", StatusRecord.ClosedStatus);
@@ -122,6 +142,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void AddedRecentlyTicketsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.AddedRecentlyTickets) != null)
+            {
+                return;
+            }
+
             _queriesAndProjectionsGenerator.CreateQuery(QueryNames.AddedRecentlyTickets, "Ticket", "SidebarTickets", "Shape", "TitleOnly", true, true);
 
             _queriesAndProjectionsGenerator.CreateProjection(Consts.SidebarProjectionPortletTemplateType, QueryNames.AddedRecentlyTickets, T(ProjectionNames.AddedRecentlyTicketsProjectionTitle).Text, "Ticket", ItemsPerSidebarPortlet);
@@ -129,6 +154,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void AddedRecentlyDiscussionsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.AddedRecentlyDiscussions) != null)
+            {
+                return;
+            }
+
             _queriesAndProjectionsGenerator.CreateQuery(QueryNames.AddedRecentlyDiscussions, ContentTypes.DiscussionContentType, "SidebarItems", "Shape", true, true);
 
             _queriesAndProjectionsGenerator.CreateProjection(Consts.SidebarProjectionPortletTemplateType, QueryNames.AddedRecentlyDiscussions, T(ProjectionNames.AddedRecentlyDiscussionsProjectionTitle).Text, ContentTypes.DiscussionContentType, ItemsPerSidebarPortlet);
@@ -136,6 +166,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void UpdaedRecentlyWikisQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.UpdatedRecentlyWikis) != null)
+            {
+                return;
+            }
+
             _queriesAndProjectionsGenerator.CreateQuery(QueryNames.UpdatedRecentlyWikis, ContentTypes.WikiItemType, "SidebarItems", "Shape", true, true);
 
             _queriesAndProjectionsGenerator.CreateProjection(Consts.SidebarProjectionPortletTemplateType, QueryNames.UpdatedRecentlyWikis, T(ProjectionNames.UpdatedRecentlyWikisProjectionTitle).Text, ContentTypes.ProjectWikiContentType, ItemsPerSidebarPortlet);
@@ -143,6 +178,11 @@ namespace Orchard.CRM.Dashboard.Commands
 
         private void MyProjectsQueryAndProjection()
         {
+            if (_queriesAndProjectionsGenerator.GetQuery(QueryNames.MyProjects) != null)
+            {
+                return;
+            }
+
             var query = _queriesAndProjectionsGenerator.CreateQuery(QueryNames.MyProjects, ContentTypes.ProjectContentType, "SidebarItems", "Shape", "TitleOnly", true, false);
 
             // assigned to current user

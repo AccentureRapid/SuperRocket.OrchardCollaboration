@@ -1,7 +1,6 @@
 using Orchard.ContentManagement;
 using Orchard.CRM.Core.Models;
 using Orchard.CRM.Core.Services;
-using Orchard.Data;
 using Orchard.DisplayManagement;
 using Orchard.Localization;
 using Orchard.Projections.Descriptors.Filter;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using IFilterProvider = Orchard.Projections.Services.IFilterProvider;
 
@@ -82,7 +80,7 @@ namespace Orchard.CRM.Core.Providers.Filters
                 name: new LocalizedString("Status Type"),
                 description: T("Status Type Selection"),
                 filter: (context) => ApplyStatusTypeFilter(context),
-                display: context => Display(context, "StatusRecord_Id"),
+                display: context => Display(context, "StatusTypeRecord_Id"),
                 form: TicketStatusTypeFilterForm.FormName);
 
             // TicketType

@@ -7,7 +7,7 @@ using Orchard.Core.Containers.Models;
 
 namespace Orchard.CRM.Dashboard.Models
 {
-    public class GenericDashboardPart : ContentPart<ContainerPartRecord>
+    public class GenericDashboardPart : ContentPart
     {
         /// <summary>
         /// Comma-seperated list of the Portlet types for the given dashboard
@@ -25,6 +25,24 @@ namespace Orchard.CRM.Dashboard.Models
         {
             get { return this.Retrieve(x => x.CreatePortletsOnPublishing); }
             set { this.Store(x => x.CreatePortletsOnPublishing, value); }
+        }
+
+        public bool Collapsiable
+        {
+            get { return this.Retrieve(x => x.Collapsiable); }
+            set { this.Store(x => x.Collapsiable, value); }
+        }
+
+        public bool ShowCollapsedInInitializedState
+        {
+            get { return this.Retrieve(x => x.ShowCollapsedInInitializedState); }
+            set { this.Store(x => x.ShowCollapsedInInitializedState, value); }
+        }
+
+        public bool ShowConfigurableItemsCountInHeader
+        {
+            get { return this.Retrieve(x => x.ShowConfigurableItemsCountInHeader); }
+            set { this.Store(x => x.ShowConfigurableItemsCountInHeader, value); }
         }
     }
 }

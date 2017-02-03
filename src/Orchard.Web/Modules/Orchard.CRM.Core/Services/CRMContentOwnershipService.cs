@@ -1,4 +1,5 @@
 using Orchard.ContentManagement;
+using Orchard.Core.Common.Models;
 using Orchard.CRM.Core.Models;
 using Orchard.Data;
 using Orchard.Localization;
@@ -104,13 +105,26 @@ namespace Orchard.CRM.Core.Services
 
             var contentPermissionPart = item.As<ContentItemPermissionPart>();
 
-            if (contentPermissionPart == null)
-            {
-                return true;
-            }
-
             if (this.orchardServices.WorkContext.CurrentUser == null)
             {
+                return false;
+            }
+
+            if (contentPermissionPart == null)
+            {
+                // if there is no ContentItemPermissionPart, then operator users can edit the item as well as
+                // the creator of the item
+                if (isOperator || isAdmin)
+                {
+                    return true;
+                }
+
+                CommonPart commonPart = item.As<CommonPart>();
+                if(commonPart.Owner != null && commonPart.Owner.Id == this.orchardServices.WorkContext.CurrentUser.Id)
+                {
+                    return true;
+                }
+
                 return false;
             }
 
