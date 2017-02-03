@@ -106,7 +106,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetContentTypeDefinition :" + ex.Message);
+                Logger.Error("Error occurs when GetContentTypeDefinition :" + ex.StackTrace);
             }
             return response;
         }
@@ -152,7 +152,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when Login :" + ex.Message);
+                Logger.Error("Error occurs when Login :" + ex.StackTrace);
             }
             return response;
         }
@@ -192,7 +192,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetMyProjects :" + ex.Message);
+                Logger.Error("Error occurs when GetMyProjects :" + ex.StackTrace);
             }
             return response;
         }
@@ -219,7 +219,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetDashBoardViewModel :" + ex.Message);
+                Logger.Error("Error occurs when GetDashBoardViewModel :" + ex.StackTrace);
             }
             return response;
         }
@@ -296,7 +296,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when SearchTickets :" + ex.Message);
+                Logger.Error("Error occurs when SearchTickets :" + ex.StackTrace);
             }
             return response;
         }

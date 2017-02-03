@@ -78,6 +78,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\BasicController.cs" />
     <Compile Include="Api\AgileCollaborationController.cs" />
     <Compile Include="Common\CacheAndSignals.cs" />
     <Compile Include="Common\NullToEmptyStringResolver.cs" />
