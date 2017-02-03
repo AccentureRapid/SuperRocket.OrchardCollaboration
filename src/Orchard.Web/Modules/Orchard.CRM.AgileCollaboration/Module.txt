@@ -8,4 +8,4 @@ Description: Description for the module
 Features:
     Orchard.CRM.AgileCollaboration:
         Description: Description for feature Orchard.CRM.AgileCollaboration.
-		Dependencies: Orchard.CRM.Core
+		Dependencies: Orchard.CRM.Core,Orchard.CRM.Project

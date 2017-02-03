@@ -78,6 +78,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ProjectController.cs" />
     <Compile Include="Api\BasicController.cs" />
     <Compile Include="Api\AgileCollaborationController.cs" />
     <Compile Include="Common\CacheAndSignals.cs" />
@@ -121,6 +122,10 @@
     <ProjectReference Include="..\Orchard.CRM.Core\Orchard.CRM.Core.csproj">
       <Project>{7AE1C659-22DD-4F7A-8D81-DADF0FAE6A74}</Project>
       <Name>Orchard.CRM.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orchard.CRM.Project\Orchard.CRM.Project.csproj">
+      <Project>{68622C6D-5AF8-4CEE-9463-D275AE8532EA}</Project>
+      <Name>Orchard.CRM.Project</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orchard.Projections\Orchard.Projections.csproj">
       <Project>{5531E894-D259-45A3-AA61-26DBE720C1CE}</Project>
