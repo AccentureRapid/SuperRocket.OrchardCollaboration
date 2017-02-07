@@ -26,6 +26,8 @@ using Orchard.Core.Title.Models;
 using Orchard.Users.Models;
 using System.Dynamic;
 using Orchard.CRM.Project.Services;
+using Orchard.Core.Settings.Models;
+using Orchard.CRM.Project.Models;
 
 namespace Orchard.CRM.AgileCollaboration.Api
 {
@@ -47,6 +49,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         private readonly ISearchTicketService _searchTicketService;
         private readonly IBusinessUnitService _businessUnitService;
         private readonly IExtendedProjectService _extendedProjectService;
+        private readonly IFolderService _folderService;
 
         public ProjectController(
             IContentManager contentManager,
@@ -62,7 +65,8 @@ namespace Orchard.CRM.AgileCollaboration.Api
             ISiteService siteService,
             ISearchTicketService searchTicketService,
             IBusinessUnitService businessUnitService,
-            IExtendedProjectService extendedProjectService
+            IExtendedProjectService extendedProjectService,
+            IFolderService folderService
             )
         {
             _contentManager = contentManager;
@@ -79,6 +83,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             _searchTicketService = searchTicketService;
             _businessUnitService = businessUnitService;
             _extendedProjectService = extendedProjectService;
+            _folderService = folderService;
 
             Logger = NullLogger.Instance;
             T = NullLocalizer.Instance;
@@ -119,6 +124,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         /// GET api/Basic/GetProjectWiki?projectId=110
         /// </summary>
         /// <returns></returns>
+        [Obsolete("It seems for wiki related, client only need folders and items attched to current folder.")]
         [HttpGet]
         public HttpResponseMessage GetProjectWiki(int projectId)
         {
@@ -136,7 +142,79 @@ namespace Orchard.CRM.AgileCollaboration.Api
             return response;
         }
 
-       
+        /// <summary>
+        /// GET api/Basic/GetFolders?projectId=110
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage GetFolders(int projectId)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var result = _folderService.GetFolders(projectId).Select(
+                    x => new
+                    {
+                        x.Id,
+                        x.As<FolderPart>().Record.Title,
+                        x.As<FolderPart>().Record.Parent_Id,
+                        Project_Id = x.As<FolderPart>().Record.Project.Id,
+                        x.As<CommonPart>().CreatedUtc,
+                        x.As<CommonPart>().PublishedUtc,
+                        x.As<CommonPart>().ModifiedUtc,
+                        x.As<CommonPart>().VersionCreatedUtc,
+                        x.As<CommonPart>().VersionModifiedUtc,
+                        x.As<CommonPart>().VersionPublishedUtc,
+                        x.As<CommonPart>().Owner.UserName
+                    });
+
+                response.Content = Serialize(result, response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetFolders :" + ex.StackTrace);
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// GET api/Basic/GetAttachedItemsToFolder?projectId=110&page=1
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage GetAttachedItemsToFolder(int folderId, int projectId, int? page)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var currentPage = page == null ? 1 : page;
+                var pager = new Pager(this.Services.WorkContext.CurrentSite, currentPage, this.Services.WorkContext.CurrentSite.PageSize);
+
+                var result = _folderService.GetAttachedItemsToFolder(projectId, folderId, pager).Select(
+                      x => new {
+                          x.Id,
+                          x.As<TitlePart>().Title,
+                          x.As<BodyPart>().Text,
+                          x.As<CommonPart>().CreatedUtc,
+                          x.As<CommonPart>().PublishedUtc,
+                          x.As<CommonPart>().ModifiedUtc,
+                          x.As<CommonPart>().VersionCreatedUtc,
+                          x.As<CommonPart>().VersionModifiedUtc,
+                          x.As<CommonPart>().VersionPublishedUtc,
+                          x.As<CommonPart>().Owner.UserName
+                      }
+                    );
+                response.Content = Serialize(result, response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetFolders :" + ex.StackTrace);
+            }
+            return response;
+        }
+
         private StringContent Serialize(dynamic source, HttpResponseMessage response)
         {
             if (source == null)
