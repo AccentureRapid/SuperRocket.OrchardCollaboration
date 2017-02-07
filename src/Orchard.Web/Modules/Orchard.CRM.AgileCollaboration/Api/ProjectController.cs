@@ -179,6 +179,43 @@ namespace Orchard.CRM.AgileCollaboration.Api
         }
 
         /// <summary>
+        /// GET api/Basic/GetAttachedItemsInRootFolder?projectId=110&page=1
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage GetAttachedItemsInRootFolder(int projectId, int? page)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var currentPage = page == null ? 1 : page;
+                var pager = new Pager(this.Services.WorkContext.CurrentSite, currentPage, this.Services.WorkContext.CurrentSite.PageSize);
+
+                var result = _folderService.GetAttachedItemsInRootFolder(projectId, pager).Select(
+                      x => new {
+                          x.Id,
+                          x.As<TitlePart>().Title,
+                          x.As<BodyPart>().Text,
+                          x.As<CommonPart>().CreatedUtc,
+                          x.As<CommonPart>().PublishedUtc,
+                          x.As<CommonPart>().ModifiedUtc,
+                          x.As<CommonPart>().VersionCreatedUtc,
+                          x.As<CommonPart>().VersionModifiedUtc,
+                          x.As<CommonPart>().VersionPublishedUtc,
+                          x.As<CommonPart>().Owner.UserName
+                      }
+                    );
+                response.Content = Serialize(result, response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetAttachedItemsInRootFolder :" + ex.StackTrace);
+            }
+            return response;
+        }
+
+        /// <summary>
         /// GET api/Basic/GetAttachedItemsToFolder?projectId=110&page=1
         /// </summary>
         /// <returns></returns>
@@ -210,7 +247,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetFolders :" + ex.StackTrace);
+                Logger.Error("Error occurs when GetAttachedItemsToFolder :" + ex.StackTrace);
             }
             return response;
         }
