@@ -78,6 +78,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\WikiController.cs" />
     <Compile Include="Api\ProjectController.cs" />
     <Compile Include="Api\BasicController.cs" />
     <Compile Include="Api\AgileCollaborationController.cs" />

@@ -32,7 +32,7 @@ using Orchard.CRM.Project.Models;
 namespace Orchard.CRM.AgileCollaboration.Api
 {
 
-    public class ProjectController : ApiController
+    public class WikiController : ApiController
     {
         
         private static readonly char[] separator = new[] { '{', '}', ',' };
@@ -51,7 +51,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         private readonly IExtendedProjectService _extendedProjectService;
         private readonly IFolderService _folderService;
 
-        public ProjectController(
+        public WikiController(
             IContentManager contentManager,
             IContentTypesService contentTypesService,
             IHtmlModuleService moduleService,
@@ -95,49 +95,111 @@ namespace Orchard.CRM.AgileCollaboration.Api
         public IOrchardServices Services { get; set; }
 
         /// <summary>
-        /// GET api/Basic/GetProject?projectId=110
+        /// GET api/Wiki/GetFolders?projectId=110
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage GetProject(int projectId)
+        public HttpResponseMessage GetFolders(int projectId)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {
-                var project = _projectService.GetProject(projectId);
-                var result = new {
-                    project.Id,
-                    project.Title,
-                    project.Description
-                };
+                var result = _folderService.GetFolders(projectId).Select(
+                    x => new
+                    {
+                        x.Id,
+                        x.As<FolderPart>().Record.Title,
+                        x.As<FolderPart>().Record.Parent_Id,
+                        Project_Id = x.As<FolderPart>().Record.Project.Id,
+                        x.As<CommonPart>().CreatedUtc,
+                        x.As<CommonPart>().PublishedUtc,
+                        x.As<CommonPart>().ModifiedUtc,
+                        x.As<CommonPart>().VersionCreatedUtc,
+                        x.As<CommonPart>().VersionModifiedUtc,
+                        x.As<CommonPart>().VersionPublishedUtc,
+                        x.As<CommonPart>().Owner.UserName
+                    });
+
                 response.Content = Serialize(result, response);
             }
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetProject :" + ex.StackTrace);
+                Logger.Error("Error occurs when GetFolders :" + ex.StackTrace);
             }
             return response;
         }
 
         /// <summary>
-        /// GET api/Basic/GetProjectWiki?projectId=110
+        /// GET api/Wiki/GetAttachedItemsInRootFolder?projectId=110&page=1
         /// </summary>
         /// <returns></returns>
-        [Obsolete("It seems for wiki related, client only need folders and items attched to current folder.")]
         [HttpGet]
-        public HttpResponseMessage GetProjectWiki(int projectId)
+        public HttpResponseMessage GetAttachedItemsInRootFolder(int projectId, int? page)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             try
             {
-                var result = _extendedProjectService.GetProjectWiki(projectId);
+                var currentPage = page == null ? 1 : page;
+                var pager = new Pager(this.Services.WorkContext.CurrentSite, currentPage, this.Services.WorkContext.CurrentSite.PageSize);
+
+                var result = _folderService.GetAttachedItemsInRootFolder(projectId, pager).Select(
+                      x => new {
+                          x.Id,
+                          x.As<TitlePart>().Title,
+                          x.As<BodyPart>().Text,
+                          x.As<CommonPart>().CreatedUtc,
+                          x.As<CommonPart>().PublishedUtc,
+                          x.As<CommonPart>().ModifiedUtc,
+                          x.As<CommonPart>().VersionCreatedUtc,
+                          x.As<CommonPart>().VersionModifiedUtc,
+                          x.As<CommonPart>().VersionPublishedUtc,
+                          x.As<CommonPart>().Owner.UserName
+                      }
+                    );
                 response.Content = Serialize(result, response);
             }
             catch (Exception ex)
             {
                 response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                Logger.Error("Error occurs when GetProjectWiki :" + ex.StackTrace);
+                Logger.Error("Error occurs when GetAttachedItemsInRootFolder :" + ex.StackTrace);
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// GET api/Wiki/GetAttachedItemsToFolder?projectId=110&page=1
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage GetAttachedItemsToFolder(int folderId, int projectId, int? page)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                var currentPage = page == null ? 1 : page;
+                var pager = new Pager(this.Services.WorkContext.CurrentSite, currentPage, this.Services.WorkContext.CurrentSite.PageSize);
+
+                var result = _folderService.GetAttachedItemsToFolder(folderId , projectId, pager).Select(
+                      x => new {
+                          x.Id,
+                          x.As<TitlePart>().Title,
+                          x.As<BodyPart>().Text,
+                          x.As<CommonPart>().CreatedUtc,
+                          x.As<CommonPart>().PublishedUtc,
+                          x.As<CommonPart>().ModifiedUtc,
+                          x.As<CommonPart>().VersionCreatedUtc,
+                          x.As<CommonPart>().VersionModifiedUtc,
+                          x.As<CommonPart>().VersionPublishedUtc,
+                          x.As<CommonPart>().Owner.UserName
+                      }
+                    );
+                response.Content = Serialize(result, response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                Logger.Error("Error occurs when GetAttachedItemsToFolder :" + ex.StackTrace);
             }
             return response;
         }
