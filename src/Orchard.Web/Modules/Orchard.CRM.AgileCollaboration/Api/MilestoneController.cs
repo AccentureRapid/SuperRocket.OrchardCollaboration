@@ -90,7 +90,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetOpenMilestones :" + ex.StackTrace);
             }
             return response;
@@ -99,10 +99,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
      
         private StringContent Serialize(dynamic source, HttpResponseMessage response)
         {
-            if (source == null)
-            {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-            }
             var settings = new JsonSerializerSettings()
             {
                 ContractResolver = new NullToEmptyStringResolver(),

@@ -100,7 +100,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetBusinessUnitMembers :" + ex.StackTrace);
             }
             return response;
@@ -133,7 +133,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetBusinessUnits :" + ex.StackTrace);
             }
             return response;
@@ -163,7 +163,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetStatusRecords :" + ex.StackTrace);
             }
             return response;
@@ -191,7 +191,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetTicketTypes :" + ex.StackTrace);
             }
             return response;
@@ -219,7 +219,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetPriorities :" + ex.StackTrace);
             }
             return response;
@@ -246,7 +246,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             }
             catch (Exception ex)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 Logger.Error("Error occurs when GetServices :" + ex.StackTrace);
             }
             return response;
@@ -256,7 +256,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         {
             if (source == null)
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
             }
             var settings = new JsonSerializerSettings()
             {
