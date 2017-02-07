@@ -90,7 +90,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         public IOrchardServices Services { get; set; }
 
         /// <summary>
-        /// GET api/Basic/GetProject
+        /// GET api/Basic/GetProject?projectId=110
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -116,7 +116,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         }
 
         /// <summary>
-        /// GET api/Basic/GetProjectWiki
+        /// GET api/Basic/GetProjectWiki?projectId=110
         /// </summary>
         /// <returns></returns>
         [HttpGet]

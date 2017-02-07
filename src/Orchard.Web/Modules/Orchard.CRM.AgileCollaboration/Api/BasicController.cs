@@ -239,8 +239,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                     x => new {
                         x.Id,
                         x.Name,
-                        x.Description,
-                        x.Deleted
+                        x.Description
                     }
                     );
                 response.Content = Serialize(result, response);
