@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\MilestoneController.cs" />
+    <Compile Include="Api\DiscussionController.cs" />
     <Compile Include="Api\WikiController.cs" />
     <Compile Include="Api\ProjectController.cs" />
     <Compile Include="Api\BasicController.cs" />
