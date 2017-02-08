@@ -95,7 +95,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         public IOrchardServices Services { get; set; }
 
         /// <summary>
-        /// GET api/Basic/GetProject?projectId=110
+        /// GET api/Project/GetProject?projectId=110
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -121,7 +121,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
         }
 
         /// <summary>
-        /// GET api/Basic/GetProjectWiki?projectId=110
+        /// GET api/Project/GetProjectWiki?projectId=110
         /// </summary>
         /// <returns></returns>
         [Obsolete("It seems for wiki related, client only need folders and items attched to current folder.")]
