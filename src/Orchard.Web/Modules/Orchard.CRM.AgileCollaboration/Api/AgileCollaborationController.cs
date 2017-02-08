@@ -140,26 +140,19 @@ namespace Orchard.CRM.AgileCollaboration.Api
                     var userNameOrEmail = Convert.ToString(userInfo.userNameOrEmail);
                     var password = Convert.ToString(userInfo.password);
                     IUser user = _membershipService.ValidateUser(userNameOrEmail, password);
-                    if (user != null)
+                    var result = user == null ? new
                     {
-                        var result = new
-                        {
-                            user.Id,
-                            user.UserName,
-                            user.Email
-                        };
-                        response.Content = Serialize(result, response);
-                    }
-                    else
+                        Id = 0,
+                        UserName = string.Empty,
+                        Email = string.Empty
+                    } : new
                     {
-                        var result = new
-                        {
-                            Id = 0,
-                            UserName = string.Empty,
-                            Email = string.Empty
-                        };
-                        response.Content = Serialize(result, response);
-                    }
+                        user.Id,
+                        user.UserName,
+                        user.Email
+                    };
+
+                    response.Content = Serialize(result, response);
                 }
             }
             catch (Exception ex)
