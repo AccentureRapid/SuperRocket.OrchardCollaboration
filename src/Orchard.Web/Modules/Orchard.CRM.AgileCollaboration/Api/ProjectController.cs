@@ -110,7 +110,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                     project.Title,
                     project.Description
                 };
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -132,7 +132,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             try
             {
                 var result = _extendedProjectService.GetProjectWiki(projectId);
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -140,18 +140,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
                 Logger.Error("Error occurs when GetProjectWiki :" + ex.StackTrace);
             }
             return response;
-        }
-
-        private StringContent Serialize(dynamic source, HttpResponseMessage response)
-        {
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new NullToEmptyStringResolver(),
-                PreserveReferencesHandling = PreserveReferencesHandling.None
-            };
-
-            var stringcontent = JsonConvert.SerializeObject(source, Newtonsoft.Json.Formatting.Indented, settings);
-            return new StringContent(stringcontent, Encoding.GetEncoding("UTF-8"), "application/json");
         }
     }
 }

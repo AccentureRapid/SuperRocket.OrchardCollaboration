@@ -96,7 +96,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
             try
             {
                 var result = _basicDataService.GetBusinessUnitMembers();
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -129,7 +129,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         x.As<CommonPart>().Owner.UserName
                     }
                     ); 
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -159,7 +159,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         x.Deleted
                     }
                     );
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -187,7 +187,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         x.Deleted
                     }
                     );
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -215,7 +215,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         x.OrderId
                     }
                     );
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -242,7 +242,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         x.Description
                     }
                     );
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -250,22 +250,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
                 Logger.Error("Error occurs when GetServices :" + ex.StackTrace);
             }
             return response;
-        }
-
-        private StringContent Serialize(dynamic source, HttpResponseMessage response)
-        {
-            if (source == null)
-            {
-                response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-            }
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new NullToEmptyStringResolver(),
-                PreserveReferencesHandling = PreserveReferencesHandling.None
-            };
-
-            var stringcontent = JsonConvert.SerializeObject(source, Newtonsoft.Json.Formatting.Indented, settings);
-            return new StringContent(stringcontent, Encoding.GetEncoding("UTF-8"), "application/json");
         }
     }
 }

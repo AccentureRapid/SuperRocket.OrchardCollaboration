@@ -101,7 +101,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                  select t).FirstOrDefault();
 
                 
-                response.Content = Serialize(definition, response);
+                response.Content = Utilities.Serialize(definition, response);
             }
             catch (Exception ex)
             {
@@ -152,7 +152,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         user.Email
                     };
 
-                    response.Content = Serialize(result, response);
+                    response.Content = Utilities.Serialize(result, response);
                 }
             }
             catch (Exception ex)
@@ -192,7 +192,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                         item.As<CommonPart>().Owner.UserName
                     });
                    
-                    response.Content = Serialize(projects, response);
+                    response.Content = Utilities.Serialize(projects, response);
                 }
             }
             catch (Exception ex)
@@ -219,7 +219,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                 {
                     Services.WorkContext.CurrentUser = user;
                     var result = _agileCollaborationService.GetDashBoardViewModel();
-                    response.Content = Serialize(result, response);
+                    response.Content = Utilities.Serialize(result, response);
                 }
             }
             catch (Exception ex)
@@ -297,7 +297,7 @@ namespace Orchard.CRM.AgileCollaboration.Api
                      //result = this.SearchByLucene(pagerParameters, searchModel);
                 }
 
-                response.Content = Serialize(result, response);
+                response.Content = Utilities.Serialize(result, response);
             }
             catch (Exception ex)
             {
@@ -572,16 +572,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
 
             return string.Join(", ", parts);
         }
-        private StringContent Serialize(dynamic source, HttpResponseMessage response)
-        {
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new NullToEmptyStringResolver(),
-                PreserveReferencesHandling = PreserveReferencesHandling.None
-            };
-
-            var stringcontent = JsonConvert.SerializeObject(source, Newtonsoft.Json.Formatting.Indented, settings);
-            return new StringContent(stringcontent, Encoding.GetEncoding("UTF-8"), "application/json");
-        }
+        
     }
 }
