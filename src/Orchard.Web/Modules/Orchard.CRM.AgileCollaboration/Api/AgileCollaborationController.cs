@@ -391,7 +391,6 @@ namespace Orchard.CRM.AgileCollaboration.Api
                 itemModel.VersionCreatedUtc= contentItem.As<CommonPart>().VersionCreatedUtc;
                 itemModel.VersionModifiedUtc =contentItem.As<CommonPart>().VersionModifiedUtc;
                 itemModel.VersionPublishedUtc= contentItem.As<CommonPart>().VersionPublishedUtc;
-                itemModel.UserName = contentItem.As<CommonPart>().Owner.UserName;
 
                 model.Items.Add(itemModel);
                 itemModel.IsEditable = this._crmContentOwnershipService.CurrentUserCanEditContent(contentItem);
