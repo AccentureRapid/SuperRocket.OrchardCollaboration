@@ -25,6 +25,7 @@ using System.Globalization;
 using Orchard.Core.Title.Models;
 using Orchard.Users.Models;
 using System.Dynamic;
+using Orchard.ContentManagement;
 
 namespace Orchard.CRM.AgileCollaboration.Api
 {
@@ -140,16 +141,22 @@ namespace Orchard.CRM.AgileCollaboration.Api
                     var userNameOrEmail = Convert.ToString(userInfo.userNameOrEmail);
                     var password = Convert.ToString(userInfo.password);
                     IUser user = _membershipService.ValidateUser(userNameOrEmail, password);
+                    var parts = ((List<ContentPart>)(((dynamic)user.ContentItem).Parts)).Where(x => x.PartDefinition.Name == "User");
+                    var path = ((dynamic)parts.FirstOrDefault().Fields.Where(x => x.Name == "UserThumbnailImage").FirstOrDefault()).Path;
+
+                    string avatar = _siteService.GetSiteSettings().BaseUrl + path;
                     var result = user == null ? new
                     {
                         Id = 0,
                         UserName = string.Empty,
-                        Email = string.Empty
+                        Email = string.Empty,
+                        Avatar = string.Empty
                     } : new
                     {
                         user.Id,
                         user.UserName,
-                        user.Email
+                        user.Email,
+                        Avatar = avatar
                     };
 
                     response.Content = Utilities.Serialize(result, response);
